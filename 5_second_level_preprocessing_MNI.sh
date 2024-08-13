@@ -50,49 +50,105 @@ for s in "${sub[@]}"; do
                 tput sgr0; 
 
                 # copy the reg folder in because its needed for 2nd level analysis
-                cp -r "$DIREC"/reg/"" $DIREC$s"/func/func"$d"/level_one.feat/"
+                cp -r "$DIREC"/reg/"" $DIREC$s"/func/func"$d"/level_one_FLOB.feat/"
+
+                # # these have to be the same size across all subject because they get concatenated in the 4th dimension
+                # cp level_one.feat/mean_func.nii.gz level_one.feat/reg/standard.nii.gz
+                # cp level_one.feat/mean_func.nii.gz level_one.feat/reg/example_func.nii.gz
+                # cp level_one.feat/mean_func.nii.gz level_one.feat/reg/example_func2standard.nii.gz
 
                 # these have to be the same size across all subject because they get concatenated in the 4th dimension
-                cp level_one.feat/mean_func.nii.gz level_one.feat/reg/standard.nii.gz
-                cp level_one.feat/mean_func.nii.gz level_one.feat/reg/example_func.nii.gz
-                cp level_one.feat/mean_func.nii.gz level_one.feat/reg/example_func2standard.nii.gz
+                cp ../../../template/MNI152_T1_2mm_brain.nii.gz level_one_FLOB.feat/reg/standard.nii.gz
+                cp ../../../template/MNI152_T1_2mm_brain.nii.gz level_one_FLOB.feat/reg/example_func.nii.gz
+                cp ../../../template/MNI152_T1_2mm_brain.nii.gz level_one_FLOB.feat/reg/example_func2standard.nii.gz
 
-               # if [ -f level_one.feat/stats/subjectSpace_cope1.nii.gz  ]; then
+                totalCopes=(1)
+                for copeNum in "${totalCopes[@]}"; do
 
-                  #  echo "ignore"
 
-                    # files have already been transofrmed
-                    # subject space images are original images so just apply warps to them
-                    # no need to rename files again
-                    #sct_apply_transfo -i level_one.feat/stats/subjectSpace_cope1.nii.gz -d ../../../template/PAM50_t2s.nii.gz -w warp_anat2template.nii.gz -o level_one.feat/stats/cope1.nii.gz
-               #     flirt -in level_one.feat/stats/subjectSpace_cope1.nii.gz -ref ../../../template/MNI152_T1_2mm_brain.nii.gz -out level_one.feat/stats/cope1.nii.gz -init ../func1/anat2template.mat -applyxfm -v
-                    
-                    #sct_apply_transfo -i level_one.feat/stats/subjectSpace_varcope1.nii.gz -d ../../../template/PAM50_t2s.nii.gz -w warp_anat2template.nii.gz -o level_one.feat/stats/varcope1.nii.gz
-              #      flirt -in level_one.feat/stats/subjectSpace_varcope1.nii.gz -ref ../../../template/MNI152_T1_2mm_brain.nii.gz -out level_one.feat/stats/varcope1.nii.gz -init ../func1/anat2template.mat -applyxfm -v
+                    if [ -f level_one_FLOB.feat/stats/subjectSpace_cope"$copeNum".nii.gz  ]; then
+                        tput setaf 1;
+                        echo $DIREC$s"/func/func"$d"/level_one_FLOB.feat/stats/cope"$copeNum
 
-                    #sct_apply_transfo -i level_one.feat/subjectSpace_mask.nii.gz -d ../../../template/PAM50_t2s.nii.gz -w warp_anat2template.nii.gz -o level_one.feat/mask.nii.gz
-               #     flirt -in level_one.feat/subjectSpace_mask.nii.gz -ref ../../../template/MNI152_T1_2mm_brain.nii.gz -out level_one.feat/mask.nii.gz -init ../func1/anat2template.mat -applyxfm -v
+                        tput setaf 6;
+                        #sct_apply_transfo -i level_one.feat/stats/subjectSpace_cope1.nii.gz -d ../../../template/PAM50_t2s.nii.gz -w warp_anat2template.nii.gz -o level_one.feat/stats/cope1.nii.gz
+                        flirt -in level_one_FLOB.feat/stats/subjectSpace_cope"$copeNum".nii.gz -ref ../../../template/MNI152_T1_2mm_brain.nii.gz -out level_one_FLOB.feat/stats/cope"$copeNum".nii.gz -init ../func1/anat2template.mat -applyxfm -v
 
-               # else
+                    else
+                        tput setaf 1;
+                        echo $DIREC$s"/func/func"$d"/level_one_FLOB.feat/stats/cope"$copeNum
+                   
+                        tput setaf 6;
+                        mv level_one_FLOB.feat/stats/cope"$copeNum".nii.gz level_one_FLOB.feat/stats/subjectSpace_cope"$copeNum".nii.gz
+                        #sct_apply_transfo -i level_one.feat/stats/subjectSpace_cope1.nii.gz -d ../../../template/PAM50_t2s.nii.gz -w warp_anat2template.nii.gz -o level_one_force.feat/stats/cope1.nii.gz
+                        flirt -in level_one_FLOB.feat/stats/subjectSpace_cope"$copeNum".nii.gz -ref ../../../template/MNI152_T1_2mm_brain.nii.gz -out level_one_FLOB.feat/stats/cope"$copeNum".nii.gz -init ../func1/anat2template.mat -applyxfm -v
+
+                    fi
+
+                    if [ -f level_one_FLOB.feat/stats/subjectSpace_varcope"$copeNum".nii.gz  ]; then
+                        
+                        tput setaf 1;
+                        echo $DIREC$s"/func/func"$d"/level_one_FLOB.feat/stats/varcope"$copeNum
+
+                        tput setaf 6;
+                        #sct_apply_transfo -i level_one.feat/stats/subjectSpace_varcope1.nii.gz -d ../../../template/PAM50_t2s.nii.gz -w warp_anat2template.nii.gz -o level_one.feat/stats/varcope1.nii.gz
+                        flirt -in level_one_FLOB.feat/stats/subjectSpace_varcope"$copeNum".nii.gz -ref ../../../template/MNI152_T1_2mm_brain.nii.gz -out level_one_FLOB.feat/stats/varcope"$copeNum".nii.gz -init ../func1/anat2template.mat -applyxfm -v
+    
+                    else
+                        tput setaf 1;
+                        echo $DIREC$s"/func/func"$d"/level_one_FLOB.feat/stats/varcope"$copeNum
+                        
+                        tput setaf 6;
+
+                        #mv level_one_FLOB.feat/stats/subjectSpace_varcope"$copeNum".nii.gz level_one_FLOB.feat/stats/subjectSpace_varcope"$copeNum".nii.gz
+                        mv level_one_FLOB.feat/stats/varcope"$copeNum".nii.gz level_one_FLOB.feat/stats/subjectSpace_varcope"$copeNum".nii.gz
+                        #sct_apply_transfo -i level_one_force.feat/stats/subjectSpace_varcope1.nii.gz -d ../../../template/PAM50_t2s.nii.gz -w warp_anat2template.nii.gz -o level_one_force.feat/stats/varcope1.nii.gz
+                        flirt -in level_one_FLOB.feat/stats/subjectSpace_varcope"$copeNum".nii.gz -ref ../../../template/MNI152_T1_2mm_brain.nii.gz -out level_one_FLOB.feat/stats/varcope"$copeNum".nii.gz -init ../func1/anat2template.mat -applyxfm -v
+    
+                    fi
+
+                done
+
+                # if [ -f level_one.feat/stats/subjectSpace_mask.nii.gz  ]; then
+
+                #     # cp ../../../template/MNI152_T1_brain_mask.nii.gz level_one.feat/mask.nii.gz
+                #     # cp ../func1/MNI152_GM.nii.gz level_one.feat/mask.nii.gz
+
+                #     flirt -in level_one.feat/subjectSpace_mask.nii.gz -ref ../../../template/MNI152_T1_2mm_brain.nii.gz -out level_one.feat/mask.nii.gz -init ../func1/anat2template.mat -applyxfm -v
+                #     flirt -in level_one.feat/subjectSpace_mask.nii.gz -ref ../../../template/MNI152_T1_2mm_brain.nii.gz -out level_one.feat/reg_standard/mask.nii.gz -init ../func1/anat2template.mat -applyxfm -v
+
+                #     #sct_apply_transfo -i level_one.feat/subjectSpace_mask.nii.gz -d ../../../template/PAM50_t2s.nii.gz -w warp_anat2template.nii.gz -o level_one.feat/mask.nii.gz
+                #     #flirt -in level_one_force.feat/subjectSpace_mask.nii.gz -ref ../../../template/MNI152_T1_2mm_brain.nii.gz -out level_one_force.feat/mask.nii.gz -init ../func1/anat2template.mat -applyxfm -v
+
+                # else
+                #     mv level_one.feat/mask.nii.gz level_one.feat/subjectSpace_mask.nii.gz
+                #     # cp ../../../template/MNI152_T1_brain_mask.nii.gz level_one.feat/mask.nii.gz
+                #     # cp ../func1/MNI152_GM.nii.gz level_one.feat/mask.nii.gz
+
+                #     flirt -in level_one.feat/mask.nii.gz -ref ../../../template/MNI152_T1_2mm_brain.nii.gz -out level_one.feat/mask.nii.gz -init ../func1/anat2template.mat -applyxfm -v
+                #     flirt -in level_one.feat/mask.nii.gz -ref ../../../template/MNI152_T1_2mm_brain.nii.gz -out level_one.feat/reg_standard/mask.nii.gz -init ../func1/anat2template.mat -applyxfm -v
+
+                #     #sct_apply_transfo -i level_one_force.feat/subjectSpace_mask.nii.gz -d ../../../template/PAM50_t2s.nii.gz -w warp_anat2template.nii.gz -o level_one_force.feat/mask.nii.gz
+                #     #flirt -in level_one_force.feat/subjectSpace_mask.nii.gz -ref ../../../template/MNI152_T1_2mm_brain.nii.gz -out level_one_force.feat/mask.nii.gz -init ../func1/anat2template.mat -applyxfm -v
+
+                # fi
                 
-                   # echo "ignore"
-                    # rename file then apply a transform to it so its located in PAM50 space
-                  #  mv level_one.feat/stats/cope1.nii.gz level_one.feat/stats/subjectSpace_cope1.nii.gz
-                    #sleep 10
-                    #sct_apply_transfo -i level_one.feat/stats/subjectSpace_cope1.nii.gz -d ../../../template/PAM50_t2s.nii.gz -w warp_anat2template.nii.gz -o level_one.feat/stats/cope1.nii.gz
-                  #  flirt -in level_one.feat/stats/subjectSpace_cope1.nii.gz -ref ../../../template/MNI152_T1_2mm_brain.nii.gz -out level_one.feat/stats/cope1.nii.gz -init ../func1/anat2template.mat -applyxfm -v
+                if [ -f level_one_FLOB.feat/stats/subjectSpace_mask.nii.gz  ]; then
 
-                 #   mv level_one.feat/stats/varcope1.nii.gz level_one.feat/stats/subjectSpace_varcope1.nii.gz
-                    #sleep 10
-                    #sct_apply_transfo -i level_one.feat/stats/subjectSpace_varcope1.nii.gz -d ../../../template/PAM50_t2s.nii.gz -w warp_anat2template.nii.gz -o level_one.feat/stats/varcope1.nii.gz
-                 #   flirt -in level_one.feat/stats/subjectSpace_varcope1.nii.gz -ref ../../../template/MNI152_T1_2mm_brain.nii.gz -out level_one.feat/stats/varcope1.nii.gz -init ../func1/anat2template.mat -applyxfm -v
+                    cp ../../../template/MNI152_T1_brain_mask.nii.gz level_one_FLOB.feat/mask.nii.gz
 
-                 #   mv level_one.feat/mask.nii.gz level_one.feat/subjectSpace_mask.nii.gz
-                    #sleep 10
                     #sct_apply_transfo -i level_one.feat/subjectSpace_mask.nii.gz -d ../../../template/PAM50_t2s.nii.gz -w warp_anat2template.nii.gz -o level_one.feat/mask.nii.gz
-                 #   flirt -in level_one.feat/subjectSpace_mask.nii.gz -ref ../../../template/MNI152_T1_2mm_brain.nii.gz -out level_one.feat/mask.nii.gz -init ../func1/anat2template.mat -applyxfm -v
+                    #flirt -in level_one_force.feat/subjectSpace_mask.nii.gz -ref ../../../template/MNI152_T1_2mm_brain.nii.gz -out level_one_force.feat/mask.nii.gz -init ../func1/anat2template.mat -applyxfm -v
 
-                #fi
+                else
+                    mv level_one_FLOB.feat/mask.nii.gz level_one_FLOB.feat/subjectSpace_mask.nii.gz
+                    cp ../../../template/MNI152_T1_brain_mask.nii.gz level_one_FLOB.feat/mask.nii.gz
+
+                    #sct_apply_transfo -i level_one_force.feat/subjectSpace_mask.nii.gz -d ../../../template/PAM50_t2s.nii.gz -w warp_anat2template.nii.gz -o level_one_force.feat/mask.nii.gz
+                    #flirt -in level_one_force.feat/subjectSpace_mask.nii.gz -ref ../../../template/MNI152_T1_2mm_brain.nii.gz -out level_one_force.feat/mask.nii.gz -init ../func1/anat2template.mat -applyxfm -v
+
+                fi
+                cp level_one_FLOB.feat/mask.nii.gz level_one_FLOB.feat/reg_standard/mask.nii.gz
 
             elif [ "$ind" == "2" ]; then
 

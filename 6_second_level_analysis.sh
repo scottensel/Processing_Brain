@@ -54,20 +54,21 @@ for s in "${sub[@]}"; do
           
                     for i in "../../template/second_level_template.fsf"; do
                         
-                        sed -e 's@OUTDIR@'"level_two"$naming""'@g' \
-                            -e 's@PATH1@'$DIREC$s"/func/func"$runNum"/level_one.feat"'@g' \
-                            -e 's@THRESH_MASK@'$DIREC$s"/func/func1/MNI152_GM.nii.gz"'@g' \
+                        sed -e 's@OUTDIR@'"level_two_FLOB"$naming""'@g' \
+                            -e 's@PATH1@'$DIREC$s"/func/func"$runNum"/level_one_FLOB.feat"'@g' \
+                            -e 's@THRESH_MASK@'""'@g' \
                             -e 's@NSUBJECTS@'${#myFunc[@]}'@g' <$i> design_leveltwo"$j".fsf 
     
                             #-e 's@THRESH_MASK@'$DIREC"template/MNI152_T1_2mm_brain_GM.nii.gz"'@g' \
-    
+                                #-e 's@THRESH_MASK@'$DIREC$s"/func/func1/MNI152_GM.nii.gz"'@g' \
+
                     done
     
                 elif [ "$j" == "2" ]; then
     
                     for i in "design_leveltwo"$((j-1))".fsf"; do
     
-                        sed -e 's@PATH2@'$DIREC$s"/func/func"$runNum"/level_one.feat"'@g' \
+                        sed -e 's@PATH2@'$DIREC$s"/func/func"$runNum"/level_one_FLOB.feat"'@g' \
                             -e 's@OUTLPATH@''@g' <$i> design_leveltwo"$j".fsf 
     
                     done
@@ -79,7 +80,7 @@ for s in "${sub[@]}"; do
     
                     for i in "design_leveltwo"$((j-1))".fsf"; do
      
-                        sed -e 's@FEAT_PATH@'"# 4D AVW data or FEAT directory ("$j")\nset feat_files("$j") "$DIREC$s"/func/func"$runNum"/level_one.feat\n\nFEAT_PATH"'@g' \
+                        sed -e 's@FEAT_PATH@'"# 4D AVW data or FEAT directory ("$j")\nset feat_files("$j") "$DIREC$s"/func/func"$runNum"/level_one_FLOB.feat\n\nFEAT_PATH"'@g' \
                             -e 's@EVG_PATH@'"# Higher-level EV value for EV 1 and input "$j"\nset fmri(evg"$j".1) 1\n\nEVG_PATH"'@g' \
                             -e 's@GROUPMEM_PATH@'"# Group membership for input "$j"\nset fmri(groupmem\."$j") 1\n\nGROUPMEM_PATH"'@g' <$i> design_leveltwo"$j".fsf 
     

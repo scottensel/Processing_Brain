@@ -4,7 +4,7 @@ clear all
 
 
 % varibales to set up before
-subName = 'SBSN_S_001';
+subName = 'SBSN_H_102';
 disp(subName)
 
 volRemoved = 5;
@@ -28,7 +28,11 @@ slice_number_folder = dir(direc2);
 % im fucked and will figure out later
 
 for folder = 3:length(physio_folders)
-    
+
+    if contains(physio_folders(folder).name, 'physio0')
+        continue
+    end
+
     disp(fullfile(direc, physio_folders(folder).name))
     
     fid = fopen(fullfile(direc, physio_folders(folder).name, 'test.txt'),'rt');
