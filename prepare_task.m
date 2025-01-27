@@ -2,8 +2,7 @@ clear all
 
 addpath('D:\NHP_code\cbiNifti')
 
-subject = 'SBSN_H_102';
-
+subject = 'SBSN_S_005';
 direc_start = 'D:\SBSN\Data\Brain';
 direc_end = '\task\';
 load(fullfile(direc_start, subject, direc_end, 'param.mat'))

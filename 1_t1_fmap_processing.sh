@@ -43,7 +43,7 @@ for s in "${sub[@]}"; do
     flirt -in t1_brain.nii.gz -ref ../../template/MNI152_T1_2mm_brain.nii.gz -omat t12template.mat -out t1_MNI.nii.gz -v
 
     # to register the brain to the template instead of the entitre skull
-    flirt -in t1_crop.nii.gz -ref ../../../template/MNI152_T1_2mm_brain.nii.gz -out t1_skull_MNI.nii.gz -init t12template.mat -applyxfm -v
+    flirt -in t1_crop.nii.gz -ref ../../template/MNI152_T1_2mm_brain.nii.gz -out t1_skull_MNI.nii.gz -init t12template.mat -applyxfm -v
 
     # this will register EPI to t1
     #epi_reg --epi=func/func1/fmri_brain_moco_mean.nii.gz --t1=anat/t1_crop.nii.gz --t1brain=anat/t1_brain.nii.gz --out=test_epi.nii.gz -v

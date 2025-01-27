@@ -6,31 +6,33 @@
 # This points to the path of your subjects
 
 # List of subjects
-declare -a sub=("SBSN_S_001")
+#declare -a sub=("SBSN_S_001")
 #declare -a sub=("SBSN_S_001" "SBSN_S_002")
 
 # Path of the folder containing all data
-DIREC="/mnt/d/SBSN/Data/Brain/"
+#DIREC="/mnt/d/SBSN/Data/Brain/"
 
 ####################################
 # Here edit which paths you want to be able to choose from
 # the folder after this should contain all of the SBSN_X_00X folders
-myPaths=("/mnt/d/SBSN/Data/Brain/" "/mnt/c/Users/scott/Documents/Brain/")
+#myPaths=("/mnt/d/SBSN/Data/Brain/" "/mnt/c/Users/scott/Documents/Brain/")
 ####################################
 
-echo "Choose a Saved Path:"
-for i in ${!myPaths[@]}; do
-  echo "$i -> path ${myPaths[$i]}" 
-done
+#echo "Choose a Saved Path:"
+#for i in ${!myPaths[@]}; do
+#  echo "$i -> path ${myPaths[$i]}" 
+#done
 
-tput setaf 6; 
-echo -n "Path Number: "
-tput sgr0;
-read indPath
+#tput setaf 6; 
+#echo -n "Path Number: "
+#tput sgr0;
+#read indPath
 
 # setting the variable to correct path
-DIREC=${myPaths[$indPath]}
+#DIREC=${myPaths[$indPath]}
 
+DIREC="/mnt/d/SBSN/Data/Brain/" 
+echo $DIREC
 
 echo "Choose a Subject"
 mySub=("SBSN_H_" "SBSN_M_" "SBSN_S_")
@@ -71,12 +73,12 @@ done
 
 
 echo "Choose Functional Files to run"
-echo "Enter 0 for all"
+echo "Enter a for all"
 tput setaf 6; 
 read -p "Enter Functional Runs to Process: " -a myFunc
 tput sgr0;
 
-if [ "$myFunc" == "0" ]; then
+if [ "$myFunc" == "a" ]; then
     myFunc=(1 2 3 4 5 6)
 fi
 

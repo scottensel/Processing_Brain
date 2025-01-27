@@ -5,7 +5,7 @@ clear all
 addpath('D:\NHP_code\cbiNifti')
 
 % varibales to set up before
-subName = {'SBSN_H_001','SBSN_H_002','SBSN_H_003','SBSN_H_004','SBSN_H_007','SBSN_H_008','SBSN_H_010'}; 
+subName = {'SBSN_S_001','SBSN_S_002','SBSN_S_003','SBSN_S_004','SBSN_S_005','SBSN_S_055','SBSN_S_066','SBSN_S_077'}; 
 
 allData = {};
 for i = 1:length(subName)
@@ -13,7 +13,7 @@ for i = 1:length(subName)
     allData{i, 1} = {};
     allData{i, 2} = subName{i};
 
-    for j = 0:6
+    for j = 1:4
         direc = fullfile('D:\SBSN\Data\Brain', subName{i}, 'func', ['func', num2str(j)]);
         
         motionData = importdata(fullfile('D:\SBSN\Data\Brain', subName{i}, 'func', ['func', num2str(j)], 'fmri_moco.txt'));
@@ -25,8 +25,8 @@ for i = 1:length(subName)
         FD = FD(5:end,:);
 
         % number of active voxels
-        allData{i, 1}{j+1, 1} = [mean(reshape(FD, [], 1),'omitnan'), std(reshape(FD, [], 1),'omitnan')];
-        allData{i, 1}{j+1, 2} = [subName{i}, ' func', num2str(j)];
+        allData{i, 1}{j, 1} = [mean(reshape(FD, [], 1),'omitnan'), std(reshape(FD, [], 1),'omitnan')];
+        allData{i, 1}{j, 2} = [subName{i}, ' func', num2str(j)];
 
     
     end
@@ -34,19 +34,14 @@ end
 
 
 for i = 1:length(allData)
-    for j = 1:length(allData{i,1})
 
-        frameD(i,j) = allData{i,1}{j,1}(1);
-
-    end
+    frameD(i,:) = allData{i,1}{1,1}(1);
 
 end
 
 mean(mean(frameD)) 
-std(mean(frameD))/sqrt(length(mean(frameD)))
+std(frameD)/sqrt(length(frameD))
 
-mean(frameD,1) 
-std(frameD,1)/sqrt(length(mean(frameD)))
 %% TSNR
 clear all
 
@@ -54,7 +49,7 @@ clear all
 addpath('D:\NHP_code\cbiNifti')
 
 % varibales to set up before
-subName = {'SBSN_H_001','SBSN_H_002','SBSN_H_003','SBSN_H_004','SBSN_H_007','SBSN_H_008','SBSN_H_010'}; 
+subName = {'SBSN_S_001','SBSN_S_002','SBSN_S_003','SBSN_S_004','SBSN_S_005','SBSN_S_055','SBSN_S_066','SBSN_S_077'}; 
 
 % fmri_brain_moco_mean_tsnr_MNI152.nii.gz
 
@@ -67,7 +62,7 @@ for i = 1:length(subName)
     allData{i, 1} = {};
     allData{i, 2} = subName{i};
 
-    for j = 0:6
+    for j = 1:4
         direc = fullfile('D:\SBSN\Data\Brain', subName{i}, 'func', ['func', num2str(j)]);
     
         subjectFolder = dir(direc);
@@ -87,8 +82,8 @@ for i = 1:length(subName)
         mag = dataFile(brainLevels>=1);
 
         % number of active voxels
-        allData{i, 1}{j+1, 1} = [mean(reshape(mag, [], 1),'omitnan'), std(reshape(mag, [], 1),'omitnan')];
-        allData{i, 1}{j+1, 2} = [subName{i}, ' func', num2str(j)];
+        allData{i, 1}{j, 1} = [mean(reshape(mag, [], 1),'omitnan'), std(reshape(mag, [], 1),'omitnan')];
+        allData{i, 1}{j, 2} = [subName{i}, ' func', num2str(j)];
 
     
     end
@@ -105,13 +100,15 @@ for i = 1:length(allData)
 end
 
 
-plotCreator(tsnr, 1:7);
+figure;
+plot(tsnr')
+% plotCreator(tsnr, 1:7);
 make_pretty
-xlim([0.75,7.25])
+xlim([0.75,4.25])
 ylabel('TSNR')
 xlabel('Run Number');
-title(sprintf('TSNR of Each Run'));
-xticklabels({'Rest','1','2','3','4','5','6'})
+title(sprintf('TSNR of Participant'));
+% xticklabels({'1','2','3','4'})
 
 % figure;
 % plot(tsnr', '.-r')
@@ -121,22 +118,22 @@ xticklabels({'Rest','1','2','3','4','5','6'})
 
 
 % Save the plot as a PNG image
-saveas(gcf, 'D:\SBSN\Manuscript\plots\Brain_tsnr.png');
-saveas(gcf, 'D:\SBSN\Manuscript\plots\Brain_tsnr.svg');
+% saveas(gcf, 'D:\SBSN\Manuscript\plots\Brain_tsnr.png');
+% saveas(gcf, 'D:\SBSN\Manuscript\plots\Brain_tsnr.svg');
 
 
 % Define the run combinations (1 to 6)
-runCombinations = 1:7;
-
-% Spearman's correlation for active voxels
-[rho_activeVoxels, pval_activeVoxels] = corr(runCombinations', mean(tsnr)', 'Type', 'Spearman');
-
-% Display results for active voxels
-disp('Spearman correlation for active voxels:');
-disp('Correlation coefficients (rho):');
-disp(rho_activeVoxels);
-disp('P-values:');
-disp(pval_activeVoxels);
+% runCombinations = 1:7;
+% 
+% % Spearman's correlation for active voxels
+% [rho_activeVoxels, pval_activeVoxels] = corr(runCombinations', mean(tsnr)', 'Type', 'Spearman');
+% 
+% % Display results for active voxels
+% disp('Spearman correlation for active voxels:');
+% disp('Correlation coefficients (rho):');
+% disp(rho_activeVoxels);
+% disp('P-values:');
+% disp(pval_activeVoxels);
 
 % runRepeatedMeasuresANOVA(tsnr)
 
@@ -150,7 +147,7 @@ clear all
 addpath('D:\NHP_code\cbiNifti')
 
 % varibales to set up before
-subName = {'SBSN_H_001','SBSN_H_002','SBSN_H_003','SBSN_H_004','SBSN_H_007','SBSN_H_008','SBSN_H_010'}; 
+subName = {'SBSN_S_001','SBSN_S_002','SBSN_S_003','SBSN_S_004','SBSN_S_005','SBSN_S_055','SBSN_S_066','SBSN_S_077'}; 
 zScore = 2.3;
 
 copeFile = 'cope1.feat';
@@ -186,10 +183,6 @@ for i = 1:length(subName)
             end
 
             [dataFile, hdr] = cbiReadNifti(fullfile(direc, subjectFolder(folder).name,  copeFile, 'thresh_zstat1.nii'));
-            
-            if i == 1
-                dataFile = flip(dataFile, 1);
-            end
 
             disp(fullfile(direc, subjectFolder(folder).name,  copeFile, 'thresh_zstat1.nii'))
 
@@ -219,17 +212,14 @@ end
 
 
 for i = 1:length(allData)
-    for j = 1:length(allData{i,1})
+%     for j = 1:length(allData{i,1})
 
-        activeVoxels(i,j) = allData{i,1}{j,1}(1);
-        zScores(i,j) = allData{i,1}{j,1}(2);
+        activeVoxels(i) = allData{i,1}{1,1}(1);
+        zScores(i) = allData{i,1}{1,1}(2);
         
-        actVoxelsSeg4(i,:) = allData{i,1}{3,3}(1,:);
-        zSeg4(i,:) = allData{i,1}{3,3}(2,:);
-
-        actVoxelsSeg6(i,:) = allData{i,1}{5,3}(1,:);
-        zSeg6(i,:) = allData{i,1}{5,3}(2,:);
-    end
+        actVoxelsSeg4(i,:) = allData{i,1}{1,3}(1,:);
+        zSeg4(i,:) = allData{i,1}{1,3}(2,:);
+%     end
 
 end
 
@@ -239,188 +229,183 @@ end
 % plot(mean(activeVoxels), 'k')
 % errorbar(1:5,mean(activeVoxels), std(activeVoxels)/sqrt(length(activeVoxels)), 'Color','black')
 % make_pretty
-
-plotCreator(activeVoxels, 1:5);
+figure;
+plot(activeVoxels);
 make_pretty
-xlim([0.75,5.25])
-xlabel('Run Combination')
-ylabel('Active Voxels');
-title(sprintf('Average Active Successive runs'));
-xticks(1:5)
-xticklabels({'1-2','1-3','1-4','1-5','1-6'})
+xlim([0.75,length(subName)+0.25])
+% xlabel('Run Combination')
+% ylabel('Active Voxels');
+% title(sprintf('Average Active Successive runs'));
+xticks(1:length(subName))
+xticklabels( {'SBSN_S_001','SBSN_S_002','SBSN_S_003','SBSN_S_004','SBSN_S_005','SBSN_S_055','SBSN_S_066','SBSN_S_077'})
 
 % Save the plot as a PNG image
-saveas(gcf, 'D:\SBSN\Manuscript\plots\Brain_voxel_success.png');
-saveas(gcf, 'D:\SBSN\Manuscript\plots\Brain_voxel_success.svg');
+% saveas(gcf, 'D:\SBSN\Manuscript\plots\Brain_voxel_success.png');
+% saveas(gcf, 'D:\SBSN\Manuscript\plots\Brain_voxel_success.svg');
 % Step 1: Detect changepoints based on changes in the slope ('linear')
 % Adjust 'MaxNumChanges' based on your data (max number of changes to detect)
 
 
-% Define the run combinations (1 to 6)
-runCombinations = 1:5;
+% % Define the run combinations (1 to 6)
+% runCombinations = 1:5;
+% 
+% % Spearman's correlation for active voxels
+% [rho_activeVoxels, pval_activeVoxels] = corr(runCombinations', mean(activeVoxels)', 'Type', 'Spearman');
+% 
+% % Display results for active voxels
+% disp('Spearman correlation for active voxels:');
+% disp('Correlation coefficients (rho):');
+% disp(rho_activeVoxels);
+% disp('P-values:');
+% disp(pval_activeVoxels);
 
-% Spearman's correlation for active voxels
-[rho_activeVoxels, pval_activeVoxels] = corr(runCombinations', mean(activeVoxels)', 'Type', 'Spearman');
-
-% Display results for active voxels
-disp('Spearman correlation for active voxels:');
-disp('Correlation coefficients (rho):');
-disp(rho_activeVoxels);
-disp('P-values:');
-disp(pval_activeVoxels);
-
-
-runRepeatedMeasuresANOVA(activeVoxels)
-runRepeatedMeasuresANOVA(zScores)
-
-plotCreator(diff(activeVoxels')', 1:4);
+% 
+% runRepeatedMeasuresANOVA(activeVoxels)
+% runRepeatedMeasuresANOVA(zScores)
+% 
+% plotCreator(diff(activeVoxels')', 1:4);
 % figure;
 % plot(diff(activeVoxels'), '.-r')
 % hold on
 % plot(mean(diff(activeVoxels')'), 'k')
 % errorbar(1:4,mean(diff(activeVoxels')'), std(diff(activeVoxels')')/sqrt(length(activeVoxels)), 'Color','black')
-make_pretty
-xlim([0.75,4.25])
-xlabel('Run Combination')
-ylabel('Active Voxels');
-title(sprintf('Difference Average Active Successive runs'));
-xticks(1:4)
-xticklabels({'2-3','3-4','4-5','5-6'})
+% make_pretty
+% xlim([0.75,4.25])
+% xlabel('Run Combination')
+% ylabel('Active Voxels');
+% title(sprintf('Difference Average Active Successive runs'));
+% xticks(1:4)
+% xticklabels({'2-3','3-4','4-5','5-6'})
 
 % Save the plot as a PNG image
-saveas(gcf, 'D:\SBSN\Manuscript\plots\Brain_voxel_diff.png');
-saveas(gcf, 'D:\SBSN\Manuscript\plots\Brain_voxel_diff.svg');
+% saveas(gcf, 'D:\SBSN\Manuscript\plots\Brain_voxel_diff.png');
+% saveas(gcf, 'D:\SBSN\Manuscript\plots\Brain_voxel_diff.svg');
 
-
-plotCreator(zScores, 1:5);
+figure;
+plot(zScores);
 % figure;
 % plot(zScores', '.-r')
 % hold on
 % plot(mean(zScores), 'k')
 % errorbar(1:5,mean(zScores), std(zScores)/sqrt(length(zScores)), 'Color','black')
 make_pretty
-xlim([0.75,5.25])
+xlim([0.75,length(subName)+0.25])
 xlabel('Run Combination')
 ylabel('Z-Score');
 title(sprintf('Average Zscore Successive runs'));
-xticks(1:5)
-xticklabels({'1-2','1-3','1-4','1-5','1-6'})
+xticks(1:length(subName))
+xticklabels({'SBSN_S_001','SBSN_S_002','SBSN_S_003','SBSN_S_004','SBSN_S_005','SBSN_S_055','SBSN_S_066','SBSN_S_077'})
 % [rho,pval] = corr(mean(activeVoxels)', 'Spearman')
 
 % Save the plot as a PNG image
-saveas(gcf, 'D:\SBSN\Manuscript\plots\Brain_zscore_success.png');
-saveas(gcf, 'D:\SBSN\Manuscript\plots\Brain_zscore_success.svg');
+% saveas(gcf, 'D:\SBSN\Manuscript\plots\Brain_zscore_success.png');
+% saveas(gcf, 'D:\SBSN\Manuscript\plots\Brain_zscore_success.svg');
 
 % Spearman's correlation for Z-scores
-[rho_ZScores, pval_ZScores] = corr(runCombinations', mean(zScores)', 'Type', 'Spearman');
+% [rho_ZScores, pval_ZScores] = corr(runCombinations', mean(zScores)', 'Type', 'Spearman');
+% 
+% % Display results for Z-scores
+% disp('Spearman correlation for Z-scores:');
+% disp('Correlation coefficients (rho):');
+% disp(rho_ZScores);
+% disp('P-values:');
+% disp(pval_ZScores);
 
-% Display results for Z-scores
-disp('Spearman correlation for Z-scores:');
-disp('Correlation coefficients (rho):');
-disp(rho_ZScores);
-disp('P-values:');
-disp(pval_ZScores);
 
 
-
-plotCreator(diff(zScores')', 1:4);
-% figure;
-% plot(diff(zScores'), '.-r')
-% hold on
-% plot(mean(diff(zScores')'), 'k')
-% errorbar(1:4,mean(diff(zScores')'), std(diff(zScores')')/sqrt(length(zScores)), 'Color','black')
-make_pretty
-xlim([0.75,4.25])
-xlabel('Run Combination')
-ylabel('zScores');
-title(sprintf('Difference Average zScores Successive runs'));
-xticks(1:4)
-xticklabels({'2-3','3-4','4-5','5-6'})
+% plotCreator(diff(zScores')', 1:4);
+% % figure;
+% % plot(diff(zScores'), '.-r')
+% % hold on
+% % plot(mean(diff(zScores')'), 'k')
+% % errorbar(1:4,mean(diff(zScores')'), std(diff(zScores')')/sqrt(length(zScores)), 'Color','black')
+% make_pretty
+% xlim([0.75,4.25])
+% xlabel('Run Combination')
+% ylabel('zScores');
+% title(sprintf('Difference Average zScores Successive runs'));
+% xticks(1:4)
+% xticklabels({'2-3','3-4','4-5','5-6'})
 
 % Save the plot as a PNG image
-saveas(gcf, 'D:\SBSN\Manuscript\plots\Brain_zscore_diff.png');
-saveas(gcf, 'D:\SBSN\Manuscript\plots\Brain_zscore_diff.svg');
+% saveas(gcf, 'D:\SBSN\Manuscript\plots\Brain_zscore_diff.png');
+% saveas(gcf, 'D:\SBSN\Manuscript\plots\Brain_zscore_diff.svg');
 
 
 
 
-time = [1, 2, 3, 4, 5];
-findSlopePts(activeVoxels, time)
-make_pretty
-xlim([0.75,5.25])
-xlabel('Run Combination')
-ylabel('Active Voxels');
-title(sprintf('Difference Average Active Voxels Successive runs'));
-xticks(1:5)
-xticklabels({'1-2','1-3','1-4','1-5','1-6'})
-% Save the plot as a PNG image
-saveas(gcf, 'D:\SBSN\Manuscript\plots\Brain_voxel_slope.png');
-saveas(gcf, 'D:\SBSN\Manuscript\plots\Brain_voxel_slope.svg');
+% time = [1, 2, 3, 4, 5];
+% findSlopePts(activeVoxels, time)
+% make_pretty
+% xlim([0.75,length(subName)+0.25])
+% xlabel('Run Combination')
+% ylabel('Active Voxels');
+% title(sprintf('Difference Average Active Voxels Successive runs'));
+% xticks(1:5)
+% xticklabels({'1-2','1-3','1-4','1-5','1-6'})
+% % Save the plot as a PNG image
+% % saveas(gcf, 'D:\SBSN\Manuscript\plots\Brain_voxel_slope.png');
+% % saveas(gcf, 'D:\SBSN\Manuscript\plots\Brain_voxel_slope.svg');
+% 
+% 
+% 
+% time = [1, 2, 3, 4, 5];
+% findSlopePts(zScores, time)
+% make_pretty
+% xlim([0.75,length(subName)+0.25])
+% xlabel('Run Combination')
+% ylabel('Z-Score');
+% title(sprintf('Average Zscore Successive runs'));
+% xticks(1:5)
+% xticklabels({'1-2','1-3','1-4','1-5','1-6'})
+% % Save the plot as a PNG image
+% % saveas(gcf, 'D:\SBSN\Manuscript\plots\Brain_zscore_slope.png');
+% % saveas(gcf, 'D:\SBSN\Manuscript\plots\Brain_zscore_slope.svg');
 
+% actVoxelsSeg6 = actVoxelsSeg4(3:end,:);
+% zSeg6 = zSeg4(3:end,:);
 
+% actVoxelsSeg4(3:end,:) = [];
+% zSeg4(3:end,:) = [];
 
-time = [1, 2, 3, 4, 5];
-findSlopePts(zScores, time)
-make_pretty
-xlim([0.75,5.25])
-xlabel('Run Combination')
-ylabel('Z-Score');
-title(sprintf('Average Zscore Successive runs'));
-xticks(1:5)
-xticklabels({'1-2','1-3','1-4','1-5','1-6'})
-% Save the plot as a PNG image
-saveas(gcf, 'D:\SBSN\Manuscript\plots\Brain_zscore_slope.png');
-saveas(gcf, 'D:\SBSN\Manuscript\plots\Brain_zscore_slope.svg');
-
-
-%         if i > 4
-%             plot(value(i,:)', 'x-', 'Color', opac{i-1}, 'MarkerSize', 15)
-%             hold on
 figure;
-hBar=barh([mean(actVoxelsSeg4)', mean(actVoxelsSeg6)']);
-X=cell2mat(get(hBar,'XData')).'+[hBar.XOffset];
+hBar=barh(mean(actVoxelsSeg4)');
+X=get(hBar,'XData').'+[hBar.XOffset];
 hold on  %4 runs
-hEB = errorbar([mean(actVoxelsSeg4)', mean(actVoxelsSeg6)'], X, [(std(actVoxelsSeg4)/sqrt(length(actVoxelsSeg4)))',  (std(actVoxelsSeg6)/sqrt(length(actVoxelsSeg6)))'], 'horizontal', '.', 'Color','black');  % add the errorbar
-% errorbar(mean(actVoxelsSeg4), 1:4, std(actVoxelsSeg4)/sqrt(length(actVoxelsSeg4)), 'horizontal', '.', 'Color','black')
-randVec = (-1 + (1+1)*rand(4,1))/10;
-scatter(actVoxelsSeg4(1:4,:), [randVec+X(1,1), randVec+X(2,1), randVec+X(3,1), randVec+X(4,1), randVec+X(5,1), randVec+X(6,1), randVec+X(7,1), randVec+X(8,1)], 20, 'k','o','filled'); 
-scatter(actVoxelsSeg6(1:4,:), [randVec+X(1,2), randVec+X(2,2), randVec+X(3,2), randVec+X(4,2), randVec+X(5,2), randVec+X(6,2), randVec+X(7,2), randVec+X(8,2)], 20, 'k','o','filled'); 
-randVec = (-1 + (1+1)*rand(3,1))/10;
-scatter(actVoxelsSeg4(5:end,:), [randVec+X(1,1), randVec+X(2,1), randVec+X(3,1), randVec+X(4,1), randVec+X(5,1), randVec+X(6,1), randVec+X(7,1), randVec+X(8,1)], 20, 'k','x'); 
-scatter(actVoxelsSeg6(5:end,:), [randVec+X(1,2), randVec+X(2,2), randVec+X(3,2), randVec+X(4,2), randVec+X(5,2), randVec+X(6,2), randVec+X(7,2), randVec+X(8,2)], 20, 'k','x'); 
-set (gca,'YDir','reverse')
+hEB = errorbar(mean(actVoxelsSeg4)', X, (std(actVoxelsSeg4)/sqrt(length(actVoxelsSeg4)))', 'horizontal', '.', 'Color','black');  % add the errorbar
+randVec = (-1 + (1+1)*rand(1,1))/10;
+scatter(actVoxelsSeg4, [randVec+X(1,1), randVec+X(2,1), randVec+X(3,1), randVec+X(4,1), randVec+X(5,1), randVec+X(6,1), randVec+X(7,1), randVec+X(8,1)], 20, 'k','o','filled'); 
+% scatter(actVoxelsSeg6, [randVec+X(1,1), randVec+X(2,1), randVec+X(3,1), randVec+X(4,1), randVec+X(5,1), randVec+X(6,1), randVec+X(7,1), randVec+X(8,1)], 20, 'k','o','filled'); 
+set(gca,'YDir','reverse')
 yticks(1:length(1:8)); yticklabels({'SM (L)','SM (R)','Thalamus (L)', 'Thalamus (R)', 'Cerebellum (L)', 'Cerebellum (R)', 'BG (L)', 'BG (R)'});
 ylabel('Brain Area')
 xlabel('Active Voxels');
-title(sprintf('Average Active Voxel 4 vs 6 Runs combined'));
+title(sprintf('Average Active Voxel 4 Runs'));
 make_pretty
 
 % Save the plot as a PNG image
-saveas(gcf, 'D:\SBSN\Manuscript\plots\Brain_voxel_area.png');
-saveas(gcf, 'D:\SBSN\Manuscript\plots\Brain_voxel_area.svg');
+% saveas(gcf, 'D:\SBSN\Manuscript\plots\Brain_voxel_area.png');
+% saveas(gcf, 'D:\SBSN\Manuscript\plots\Brain_voxel_area.svg');
 
 figure;
-hBar=barh([mean(zSeg4, 'omitnan')', mean(zSeg6, 'omitnan')']);
-X=cell2mat(get(hBar,'XData')).'+[hBar.XOffset];
+hBar=barh(mean(zSeg4, 'omitnan')');
+X=get(hBar,'XData').'+[hBar.XOffset];
 hold on  %4 runs
-hEB = errorbar([mean(zSeg4, 'omitnan')', mean(zSeg6, 'omitnan')'], X, [(std(zSeg4, 'omitnan')/sqrt(length(zSeg4)))',  (std(zSeg6, 'omitnan')/sqrt(length(zSeg6)))'], 'horizontal', '.', 'Color','black');  % add the errorbar
+hEB = errorbar(mean(zSeg4, 'omitnan')', X, (std(zSeg4, 'omitnan')/sqrt(length(zSeg4)))', 'horizontal', '.', 'Color','black');  % add the errorbar
 % errorbar(mean(actVoxelsSeg4), 1:4, std(actVoxelsSeg4)/sqrt(length(actVoxelsSeg4)), 'horizontal', '.', 'Color','black')
-randVec = (-1 + (1+1)*rand(4,1))/10;
-scatter(zSeg4(1:4,:), [randVec+X(1,1), randVec+X(2,1), randVec+X(3,1), randVec+X(4,1), randVec+X(5,1), randVec+X(6,1), randVec+X(7,1), randVec+X(8,1)], 20, 'k','o','filled'); 
-scatter(zSeg6(1:4,:), [randVec+X(1,2), randVec+X(2,2), randVec+X(3,2), randVec+X(4,2), randVec+X(5,2), randVec+X(6,2), randVec+X(7,2), randVec+X(8,2)], 20, 'k','o','filled'); 
-randVec = (-1 + (1+1)*rand(3,1))/10;
-scatter(zSeg4(5:end,:), [randVec+X(1,1), randVec+X(2,1), randVec+X(3,1), randVec+X(4,1), randVec+X(5,1), randVec+X(6,1), randVec+X(7,1), randVec+X(8,1)], 20, 'k','x'); 
-scatter(zSeg6(5:end,:), [randVec+X(1,2), randVec+X(2,2), randVec+X(3,2), randVec+X(4,2), randVec+X(5,2), randVec+X(6,2), randVec+X(7,2), randVec+X(8,2)], 20, 'k','x'); 
+randVec = (-1 + (1+1)*rand(1,1))/10;
+scatter(zSeg4, [randVec+X(1,1), randVec+X(2,1), randVec+X(3,1), randVec+X(4,1), randVec+X(5,1), randVec+X(6,1), randVec+X(7,1), randVec+X(8,1)], 20, 'k','o','filled'); 
+% scatter(zSeg6, [randVec+X(1,1), randVec+X(2,1), randVec+X(3,1), randVec+X(4,1), randVec+X(5,1), randVec+X(6,1), randVec+X(7,1), randVec+X(8,1)], 20, 'k','o','filled'); 
 set (gca,'YDir','reverse')
 yticks(1:length(1:8)); yticklabels({'SM (L)','SM (R)','Thalamus (L)', 'Thalamus (R)', 'Cerebellum (L)', 'Cerebellum (R)', 'BG (L)', 'BG (R)'});
 ylabel('Brain Area')
 xlabel('Z-score');
-title(sprintf('Average Z-Score 4 vs 6 Runs combined'));
+title(sprintf('Average Z-Score 4 Runs'));
 make_pretty
 
 % Save the plot as a PNG image
-saveas(gcf, 'D:\SBSN\Manuscript\plots\Brain_zscore_area.png');
-saveas(gcf, 'D:\SBSN\Manuscript\plots\Brain_zscore_area.svg');
+% saveas(gcf, 'D:\SBSN\Manuscript\plots\Brain_zscore_area.png');
+% saveas(gcf, 'D:\SBSN\Manuscript\plots\Brain_zscore_area.svg');
 
 % h = barh(flip(cerAvg([1 2 3 4 6 5 7 8]),1),'FaceColor',[.35 .35 .35]);  %6 runs
 % %legend('4R','6R','Location','eastoutside')
@@ -438,7 +423,7 @@ clear all
 addpath('D:\NHP_code\cbiNifti')
 
 % varibales to set up before
-subName = {'SBSN_H_001','SBSN_H_002','SBSN_H_003','SBSN_H_004','SBSN_H_007','SBSN_H_008','SBSN_H_010'}; 
+subName = {'SBSN_S_001','SBSN_S_002','SBSN_S_003','SBSN_S_004','SBSN_S_005','SBSN_S_055','SBSN_S_066','SBSN_S_077'}; 
 zScore = 2.3;
 
 % THINGS TO ADD
@@ -450,7 +435,7 @@ for i = 1:length(subName)
     allData{i, 1} = {};
     allData{i, 2} = subName{i};
 
-    for j = 0:6
+    for j = 1:4
         direc = fullfile('D:\SBSN\Data\Brain', subName{i}, 'func', ['func', num2str(j)]);
 
 %         direc = fullfile('D:\SBSN\Data\Brain', subName{i}, 'func', ['func', num2str(j)]);
@@ -476,10 +461,6 @@ for i = 1:length(subName)
                 end
     
                 [dataFile, ~] = cbiReadNifti(fullfile(direc, subjectFolder(folder).name,  'stats\zstat1.nii'));
-
-                if i == 1
-                    dataFile = flip(dataFile, 1);
-                end
 
                 disp(fullfile(direc, subjectFolder(folder).name, 'stats\zstat1.nii'))
     
@@ -548,9 +529,9 @@ title(sprintf('Mean Active Voxel'));
 xticklabels({'Task-Free','Task'})
 xticks(1:2)
 
-% Save the plot as a PNG image
-saveas(gcf, 'D:\SBSN\Manuscript\plots\Brain_voxel_control.png');
-saveas(gcf, 'D:\SBSN\Manuscript\plots\Brain_voxel_control.svg');
+% % Save the plot as a PNG image
+% saveas(gcf, 'D:\SBSN\Manuscript\plots\Brain_voxel_control.png');
+% saveas(gcf, 'D:\SBSN\Manuscript\plots\Brain_voxel_control.svg');
 
 
 plotCreator(zScores2, 1:2);
@@ -569,8 +550,8 @@ xticklabels({'Task-Free','Task'})
 xticks(1:2)
 
 % Save the plot as a PNG image
-saveas(gcf, 'D:\SBSN\Manuscript\plots\Brain_zscore_control.png');
-saveas(gcf, 'D:\SBSN\Manuscript\plots\Brain_zscore_control.svg');
+% saveas(gcf, 'D:\SBSN\Manuscript\plots\Brain_zscore_control.png');
+% saveas(gcf, 'D:\SBSN\Manuscript\plots\Brain_zscore_control.svg');
 
 plotCreator(activeVoxels, 1:7);
 % figure;
@@ -587,8 +568,8 @@ make_pretty
 xticklabels({'Rest','1','2','3','4','5','6'})
 
 % Save the plot as a PNG image
-saveas(gcf, 'D:\SBSN\Manuscript\plots\Brain_active_control_all.png');
-saveas(gcf, 'D:\SBSN\Manuscript\plots\Brain_active_control_all.svg');
+% saveas(gcf, 'D:\SBSN\Manuscript\plots\Brain_active_control_all.png');
+% saveas(gcf, 'D:\SBSN\Manuscript\plots\Brain_active_control_all.svg');
 
 plotCreator(zScores, 1:7);
 % figure;
@@ -605,91 +586,10 @@ make_pretty
 xticklabels({'Rest','1','2','3','4','5','6'})
 
 % Save the plot as a PNG image
-saveas(gcf, 'D:\SBSN\Manuscript\plots\Brain_zscore_control_all.png');
-saveas(gcf, 'D:\SBSN\Manuscript\plots\Brain_zscore_control_all.svg');
+% saveas(gcf, 'D:\SBSN\Manuscript\plots\Brain_zscore_control_all.png');
+% saveas(gcf, 'D:\SBSN\Manuscript\plots\Brain_zscore_control_all.svg');
 
-%% Percent Signal Change
-clear all
-% varibales to set up before
-subName = {'SBSN_H_001','SBSN_H_002','SBSN_H_003','SBSN_H_004','SBSN_H_007','SBSN_H_008','SBSN_H_010'}; 
-
-copeFile = 'cope1.feat';
-
-allData = {};
-for i = 1:length(subName)
-
-    direc = fullfile('D:\SBSN\Data\Brain', subName{i}, 'func');
-
-    subjectFolder = dir(direc);
-
-    disp(subName{i})
-
-    allData{i, 1} = {};
-    allData{i, 2} = subName{i};
-
-    fileCounter = 1;
-    for folder = 3:length(subjectFolder)
-
-        %is dir and name contains gfeat
-        if subjectFolder(folder).isdir && contains(subjectFolder(folder).name, 'level_two_FLOB')
-
-            txtFile = importdata(fullfile(direc, subjectFolder(folder).name, copeFile, 'featquery++', 'report.txt'));
-%             fclose(fid);
-
-            fileName = strsplit(subjectFolder(folder).name, '.');
-
-            % number of active voxels
-            allData{i, 1}{fileCounter, 1} = abs(txtFile.data(4));
-            allData{i, 1}{fileCounter, 2} = subjectFolder(folder).name;
-
-            fileCounter = fileCounter + 1;
-        end
-
-    end
-end
-
-
-for i = 1:length(allData)
-    for j = 1:length(allData{i,1})
-
-        activeVoxels(i,j) = allData{i,1}{j,1};
-         
-    end
-        
-end
-
-plotCreator(activeVoxels, 1:5);
-% figure;
-% plot(activeVoxels', '.-r')
-% hold on
-% plot(mean(activeVoxels), 'k')
-% errorbar(1:5, mean(activeVoxels), std(activeVoxels)/sqrt(length(activeVoxels)), 'Color','black')
-make_pretty
-xlim([0.75,5.25])
-ylabel('Percent Signal Change')
-xlabel('Group');
-title(sprintf('Signal Change'));
-xticks(1:5)
-xticklabels({'1-2','1-3','1-4','1-5','1-6'})
-
-% Save the plot as a PNG image
-saveas(gcf, 'D:\SBSN\Manuscript\plots\Brain_signal_success.png');
-saveas(gcf, 'D:\SBSN\Manuscript\plots\Brain_signal_success.svg');
-
-% Define the run combinations (1 to 6)
-runCombinations = 1:5;
-
-% Spearman's correlation for Z-scores
-[rho_ZScores, pval_ZScores] = corr(runCombinations', mean(activeVoxels)', 'Type', 'Spearman');
-
-% Display results for Z-scores
-disp('Spearman correlation for Z-scores:');
-disp('Correlation coefficients (rho):');
-disp(rho_ZScores);
-disp('P-values:');
-disp(pval_ZScores);
-
-
+%%
 
 function plotCreator(value,len)
     % This function plots a sine wave given a frequency and duration.

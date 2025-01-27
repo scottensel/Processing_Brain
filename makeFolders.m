@@ -1,4 +1,4 @@
-subject = 'SBSN_H_104';
+subject = 'SBSN_S_005';
 
 direc_start = 'D:\SBSN\Data\Brain\';
 
