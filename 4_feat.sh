@@ -26,10 +26,10 @@ start=`date +%s`
 ####################################
 
 # load in function that has paths to subject
-. /mnt/d/SBSN/Processing_Brain/path_to_subjects.sh 
+. /mnt/d/SMA/Processing_Brain/path_to_subjects.sh 
 
 tput setaf 6; 
-echo -n "Enter the index of the step to perform (1 = Prepare for GLM, 2 = Prepare for force GLM, 3 = Prepare for iCAP): "
+echo -n "Enter the index of the step to perform (1 = Prepare for GLM, 2 = Prepare for force GLM, 3 = Prepare for iCAP, 4 = Prepare for FLOB GLM (this one)): "
 tput sgr0;
 read ind
 

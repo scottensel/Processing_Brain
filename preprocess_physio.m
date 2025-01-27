@@ -4,7 +4,7 @@ clear all
 
 
 % varibales to set up before
-subName = 'SBSN_H_102';
+subName = 'SMA05_001';
 disp(subName)
 
 volRemoved = 5;
@@ -13,10 +13,10 @@ TR = 2.2;
 % adding paths to the subject
 addpath('D:\NHP_code\cbiNifti')
 
-direc = fullfile('D:\SBSN\Data\Brain', subName, 'physio');
+direc = fullfile('D:\SMA\MRI_data_upper_limb\Brain', subName, 'physio');
 physio_folders = dir(direc);
 
-direc2 = fullfile('D:\SBSN\Data\Brain', subName, 'func');
+direc2 = fullfile('D:\SMA\MRI_data_upper_limb\Brain', subName, 'func');
 slice_number_folder = dir(direc2);
 %% THINGS TO ADD
 % my spine images are not all 100 slices

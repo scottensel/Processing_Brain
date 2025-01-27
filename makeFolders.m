@@ -1,6 +1,6 @@
-subject = 'SBSN_H_104';
+subject = 'SMA05_001';
 
-direc_start = 'D:\SBSN\Data\Brain\';
+direc_start = 'D:\SMA\MRI_data_upper_limb\Brain\';
 
 mkdir(fullfile(direc_start, subject, 'anat'))
 mkdir(fullfile(direc_start, subject, 'fieldmap'))

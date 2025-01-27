@@ -26,7 +26,7 @@ start=`date +%s`
 ####################################
 
 # load in function that has paths to subject
-. /mnt/d/SBSN/Processing_Brain/path_to_subjects.sh 
+. /mnt/d/SMA/Processing_Brain/path_to_subjects.sh 
 
 tput setaf 6; 
 echo -n "Enter the index of the step to perform (1 = Prepare for GLM, 2 = Prepare for force GLM, 3 = Prepare for iCAP): "
@@ -44,7 +44,32 @@ for s in "${sub[@]}"; do
             cd $DIREC$s"/func/func"$d"/"
             echo $DIREC$s"/func/func"$d
 
-			if [ "$ind" == "1" ]; then
+            if [ "$ind" == "0" ]; then
+
+                tput setaf 2; echo "Prepare second level analysis for GLM " $s"/func/func"$d
+                tput sgr0; 
+
+                if [ -f "level_one_FLOB.feat/stats/subjectSpace_zstat1.nii.gz" ]; then
+                    tput setaf 1;
+                    echo $DIREC$s"/func/func"$d"/level_one_FLOB.feat/stats/zstat1.nii.gz"
+
+                    tput setaf 6;
+                    flirt -in level_one_FLOB.feat/stats/subjectSpace_zstat1.nii.gz -ref ../../../template/MNI152_T1_2mm_brain.nii.gz -out level_one_FLOB.feat/stats/zstat1.nii.gz -init ../func1/anat2template.mat -applyxfm -v
+
+                else
+                    tput setaf 1;
+                    echo "No Subject File"
+                    echo $DIREC$s"/func/func"$d"/level_one_FLOB.feat/stats/zstat1.nii.gz"
+               
+                    tput setaf 6;
+                    mv level_one_FLOB.feat/stats/zstat1.nii.gz level_one_FLOB.feat/stats/subjectSpace_zstat1.nii.gz
+                    #sct_apply_transfo -i level_one.feat/stats/subjectSpace_cope1.nii.gz -d ../../../template/PAM50_t2s.nii.gz -w warp_anat2template.nii.gz -o level_one_force.feat/stats/cope1.nii.gz
+                    flirt -in level_one_FLOB.feat/stats/subjectSpace_zstat1.nii.gz -ref ../../../template/MNI152_T1_2mm_brain.nii.gz -out level_one_FLOB.feat/stats/zstat1.nii.gz -init ../func1/anat2template.mat -applyxfm -v
+
+                fi
+
+
+			elif [ "$ind" == "1" ]; then
 
                 tput setaf 2; echo "Prepare second level analysis for GLM " $s"/func/func"$d
                 tput sgr0; 
