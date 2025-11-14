@@ -1,4 +1,4 @@
-subject = 'SBSN_S_005';
+subject = 'SBSN_H_017';
 
 direc_start = 'D:\SBSN\Data\Brain\';
 
@@ -7,7 +7,7 @@ mkdir(fullfile(direc_start, subject, 'fieldmap'))
 mkdir(fullfile(direc_start, subject, 'func'))
 mkdir(fullfile(direc_start, subject, 'physio'))
 mkdir(fullfile(direc_start, subject, 'task'))
-for i = 1:4
+for i = 0:6
     mkdir(fullfile(direc_start, subject, 'func', ['func' num2str(i)]))
     mkdir(fullfile(direc_start, subject, 'physio', ['physio' num2str(i)]))
     mkdir(fullfile(direc_start, subject, 'task', ['task' num2str(i)]))

@@ -29,8 +29,8 @@ start=`date +%s`
 . /mnt/d/SBSN/Processing_Brain/path_to_subjects.sh 
 
 tput setaf 6; 
-echo -n "Enter the index of the step to perform (1 = Prepare for GLM, 2 = Prepare for force GLM, 3 = Prepare for iCAP, 4 = Prepare for FLOB GLM (this one)): "
-tput sgr0;
+echo -n "Enter the index of the step to perform (1 = Prepare for FLOB GLM (this one), 2 = Prepare for FLOB force GLM (this one), 3 = Prepare for iCAP: "
+tput sgr0
 read ind
 
 # For each subject
@@ -69,7 +69,6 @@ for s in "${sub[@]}"; do
             #ls -1 `${FSLDIR}/bin/imglob -extensions ${DIREC}${s}/physio/physio${d}/${s}ev001*` > regressors_evlist.txt
 
 
-
             ## adds the moco_params files to the counfounds list
             #paste -d '' "$DIREC$s"/func/func"$d"/fmri_moco.txt"" "$DIREC$s"/func/func"$d"/WM_regressor.txt"" "$DIREC$s"/func/func"$d"/CSF_regressor.txt"" outliers.txt > confoundsList.txt
             paste -d '' "$DIREC$s"/func/func"$d"/fmri_moco.txt"" "$DIREC$s"/func/func"$d"/WM_regressor.txt"" outliers.txt > confoundsList.txt
@@ -77,13 +76,11 @@ for s in "${sub[@]}"; do
 
             # changes the template file that it loops through
             if [ "$ind" == "1" ]; then
-                templateFile="template_design.fsf"
-            elif [ "$ind" == "2" ]; then
-                templateFile="template_design_force.fsf"
-            elif [ "$ind" == "3" ]; then
-                templateFile="template_design.fsf"
-            elif [ "$ind" == "4" ]; then
                 templateFile="template_design_FLOB.fsf"
+            elif [ "$ind" == "2" ]; then
+                templateFile="template_design_force_FLOB.fsf" 
+            elif [ "$ind" == "3" ]; then
+                templateFile="template_design.fsf"               
             fi
 
             ## Generate fsf file from template
@@ -93,55 +90,6 @@ for s in "${sub[@]}"; do
 
                 # 1 - PREPARE .fsf files properly
                 if [ "$ind" == "1" ]; then
-
-                    tput setaf 2; echo "Prepare first level analysis for GLM " $s"/func/func"$d
-                    tput sgr0; 
-
-                    # this is editing the text of the files
-                    sed -e 's@OUT_DIREC@'"level_one"'@g' \
-                            -e 's@PNMPATH@'""'@g' \
-                            -e 's@4D_DATA_PATH@'$DIREC$s"/func/func"$d"/fmri_brain_moco_reg.nii.gz"'@g' \
-                            -e 's@EVENTS_FILE_PATH@'$DIREC$s"/task/task"$d"/events.txt"'@g' \
-                            -e 's@NPTS@'"$(fslnvols $DIREC$s"/func/func"$d"/fmri_brain_moco_reg.nii.gz")"'@g' \
-                            -e 's@CONFOUND@'$DIREC$s"/func/func"$d"/confoundsList.txt"'@g' \
-                            -e 's@set fmri(regunwarp_yn) 1@'"set fmri(regunwarp_yn) 0"'@g' <$i> design_levelone.fsf
-
-                # 2 - 
-                elif [ "$ind" == "2" ]; then
-                    tput setaf 2; echo "Prepare first level analysis for GLM " $s"/func/func"$d
-                    tput sgr0; 
-
-                    # this is editing the text of the files
-                    sed -e 's@OUT_DIREC@'"level_one_force"'@g' \
-                            -e 's@PNMPATH@'""'@g' \
-                            -e 's@4D_DATA_PATH@'$DIREC$s"/func/func"$d"/fmri_brain_moco_reg.nii.gz"'@g' \
-                            -e 's@EVENTS_FILE_PATH1@'$DIREC$s"/task/task"$d"/force20.txt"'@g' \
-                            -e 's@EVENTS_FILE_TITLE1@'20'@g' \
-                            -e 's@EVENTS_FILE_PATH2@'$DIREC$s"/task/task"$d"/force45.txt"'@g' \
-                            -e 's@EVENTS_FILE_TITLE2@'45'@g' \
-                            -e 's@EVENTS_FILE_PATH3@'$DIREC$s"/task/task"$d"/force70.txt"'@g' \
-                            -e 's@EVENTS_FILE_TITLE3@'70'@g' \
-                            -e 's@NPTS@'"$(fslnvols $DIREC$s"/func/func"$d"/fmri_brain_moco_reg.nii.gz")"'@g' \
-                            -e 's@CONFOUND@'$DIREC$s"/func/func"$d"/confoundsList.txt"'@g' \
-                            -e 's@set fmri(regunwarp_yn) 1@'"set fmri(regunwarp_yn) 0"'@g' <$i> design_levelone_force.fsf
-
-
-                elif [ "$ind" == "3" ]; then
-                    tput setaf 2; echo "Prepare for iCAP " $s"/func/func"$d
-                    tput sgr0; 
-
-                    sed -e 's@OUT_DIREC@'"icap_prep"'@g' \
-                            -e 's@PNMPATH@'$DIREC$s"/func/func"$d"/regressors_evlist.txt"'@g' \
-                            -e 's@4D_DATA_PATH@'$DIREC$s"/func/func"$d"/fmri_brain_moco_reg.nii.gz"'@g' \
-                            -e 's@EVENTS_FILE_PATH@'""'@g' \
-                            -e 's@NPTS@'"$(fslnvols $DIREC$s"/func/func"$d"/fmri_brain_moco_reg.nii.gz")"'@g' \
-                            -e 's@CONFOUND@'$DIREC$s"/func/func"$d"/confoundsList.txt"'@g' \
-                            -e 's@set fmri(shape1) 3@'"set fmri(shape1) 10"'@g' \
-                            -e 's@set fmri(convolve1) 2@'"set fmri(convolve1) 0"'@g' \
-                            -e 's@set fmri(regunwarp_yn) 1@'"set fmri(regunwarp_yn) 0"'@g' <$i> design_icapprep.fsf
-
-
-                elif [ "$ind" == "4" ]; then
                     tput setaf 2; echo "Prepare first level analysis for GLM FLOB " $s"/func/func"$d
                     tput sgr0; 
 
@@ -154,42 +102,73 @@ for s in "${sub[@]}"; do
                                         -e 's@CONFOUND@'$DIREC$s"/func/func"$d"/confoundsList.txt"'@g' <$i> design_levelone_FLOB.fsf
 
 
+                elif [ "$ind" == "2" ]; then
+                    tput setaf 2; echo "Prepare first level analysis for GLM force FLOB " $s"/func/func"$d
+                    tput sgr0;
+
+                    sed -e 's@OUT_DIREC@'"level_one_force_FLOB"'@g' \
+                                        -e 's@PNMPATH@'$DIREC$s"/func/func"$d"/regressors_evlist.txt"'@g' \
+                                        -e 's@4D_DATA_PATH@'$DIREC$s"/func/func"$d"/fmri_brain_moco_reg.nii.gz"'@g' \
+                                        -e 's@OUTLYN@'"1"'@g' \
+                                        -e 's@NPTS@'"$(fslnvols $DIREC$s"/func/func"$d"/fmri_brain_moco_reg.nii.gz")"'@g' \
+                                        -e 's@CONFOUND@'$DIREC$s"/func/func"$d"/confoundsList.txt"'@g' \
+                                        -e 's@EV_TITLE1@'20'@g' \
+                                        -e 's@EV_FILE1@'$DIREC$s"/task/task"$d"/force20.txt"'@g' \
+                                        -e 's@EV_TITLE2@'45'@g' \
+                                        -e 's@EV_FILE2@'$DIREC$s"/task/task"$d"/force45.txt"'@g' \
+                                        -e 's@EV_TITLE3@'70'@g' \
+                                        -e 's@EV_FILE3@'$DIREC$s"/task/task"$d"/force70.txt"'@g' <$i> design_levelone_force_FLOB.fsf
+
+
+
+                elif [ "$ind" == "3" ]; then
+                    tput setaf 2; echo "Prepare for iCAP " $s"/func/func"$d
+                    tput sgr0; 
+
+                    sed -e 's@OUT_DIREC@'"icap_prep"'@g' \
+                            -e 's@PNMPATH@'$DIREC$s"/func/func"$d"/regressors_evlist.txt"'@g' \
+                            -e 's@4D_DATA_PATH@'$DIREC$s"/func/func"$d"/fmri_brain_moco_reg.nii.gz"'@g' \
+                            -e 's@EV_TITLE@'""'@g' \
+                            -e 's@EVENTS_FILE_PATH@'""'@g' \
+                            -e 's@NPTS@'"$(fslnvols $DIREC$s"/func/func"$d"/fmri_brain_moco_reg.nii.gz")"'@g' \
+                            -e 's@CONFOUND@'$DIREC$s"/func/func"$d"/confoundsList.txt"'@g' <$i> icap_denoised.fsf
+
                 fi
 
                 # created a design_levelone.fsf based on the template.fsf
             done
 
-            if [ "$ind" == "1" ]; then
-                tput setaf 2; echo "Run first level analysis for " $s"/func/func"$d
-                tput sgr0; 
+            
 
+            if [ "$ind" == "1" ]; then
+                tput setaf 2; echo "Run first level FLOB analysis for " $s"/func/func"$d
+                tput sgr0; 
+                
                 # Run the analysis using the fsf file
-                feat design_levelone.fsf
+                feat design_levelone_FLOB.fsf      
 
             elif [ "$ind" == "2" ]; then
-                tput setaf 2; echo "Run first level analysis for " $s"/func/func"$d
+                tput setaf 2; echo "Run first level FLOB force analysis for " $s"/func/func"$d
                 tput sgr0; 
-
+                
                 # Run the analysis using the fsf file
-                feat design_levelone_force.fsf
-            
+                feat design_levelone_force_FLOB.fs
+
             elif [ "$ind" == "3" ]; then
                 tput setaf 2; echo "Run noise regression for " $s"/func/func"$d
                 tput sgr0; 
 
                 # Run the analysis using the fsf file
-                feat design_icapprep.fsf
+                feat icap_denoised.fsf
 
-                # Copy geometry to residuals for TA
-                cp icap_prep.feat/stats/res4d.nii.gz fmri_brain_moco_denoised_subject.nii.gz
-                fslcpgeom fmri_brain_moco_reg.nii.gz fmri_brain_moco_denoised_subject.nii.gz
-            
-            elif [ "$ind" == "4" ]; then
-                tput setaf 2; echo "Run first level FLOB force analysis for " $s"/func/func"$d
-                tput sgr0; 
-                
-                # Run the analysis using the fsf file
-                feat design_levelone_FLOB.fsf      
+                #Copy geometry to residuals for TA
+                cp icap_prep.feat/stats/res4d.nii.gz fmri_brain_moco_denoised.nii.gz
+
+                # copy header info
+                fslcpgeom fmri_brain_moco_reg.nii.gz fmri_brain_moco_denoised.nii.gz
+        
+                # smooth the image
+                fslmaths fmri_brain_moco_denoised.nii.gz -s 2.5479870902 fmri_brain_moco_denoised_smooth
 
             fi
 
@@ -199,6 +178,11 @@ for s in "${sub[@]}"; do
         	tput sgr0;	
 			 			
 done
+
+echo
+echo "${sub[@]}"
+echo "${myFunc[@]}"
+echo
 
 ####################################
 # Display useful info for the log
