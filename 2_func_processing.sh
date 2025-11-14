@@ -146,7 +146,7 @@ for s in "${sub[@]}"; do
 
                 fi
 
-                if [ "$d" != "1" ]; then
+                if [ "$d" != "1" ]; then #this is so 0 rest run can be aligned to it
 
                     fslmaths fmri_brain_moco.nii.gz -Tmean fmri_brain_moco_mean.nii.gz
 

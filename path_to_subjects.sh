@@ -35,7 +35,7 @@ DIREC="/mnt/d/SMA/MRI_data_upper_limb/Brain/"
 echo $DIREC
 
 echo "Choose a Subject"
-mySub=("SMA04_" "SMA05_")
+mySub=("SMA04_" "SMA05_" "SMA06_")
 for i in ${!mySub[@]}; do
   echo "$i -> path ${mySub[$i]}" 
 done

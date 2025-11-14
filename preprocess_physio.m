@@ -4,7 +4,7 @@ clear all
 
 
 % varibales to set up before
-subName = 'SMA05_001';
+subName = 'SMA06_004';
 disp(subName)
 
 volRemoved = 5;

@@ -27,7 +27,7 @@ start=`date +%s`
 . /mnt/d/SMA/Processing_Brain/path_to_subjects.sh 
 
 tput setaf 6; 
-echo -n "Enter the index of the step to perform (1 = Prepare for GLM, 2 = Prepare for seperate force GLM): "
+echo -n "Enter the index of the step to perform (1 = Prepare for FLOB GLM (this one), 2 = Prepare for FLOB force GLM (this one)): "
 tput sgr0;
 read ind
 
@@ -119,90 +119,154 @@ for s in "${sub[@]}"; do
             feat design_leveltwo"$naming".fsf
     
 		    tput setaf 2; echo "Done!" 
-        	    tput sgr0;				 			
+        	    tput sgr0;			
+
 
         elif [ "$ind" == "2" ]; then
 
+            j=1
+            k=1
+            # changes the template file that it loops through
+            if [ "$ind" == "2" ]; then
+                levelFile="level_one_force_FLOB.feat"
+                outputName="level_two_force_FLOB"
+                templateName="second_level_cope_force_FLOB_template.fsf"
+                threshmask="MNI152_T1_brain_mask.nii"
+                # i have to treat each cope as its own subject in this and only choose the first cope for some and include the last one for toehrs
+            fi
+
+            # here I run through the number of runs were are to combine specified when you start running this
+            # always must be a minimum of two runs to do a second level analysis of per subject
             for runNum in ${myFunc[@]}; do
-    
-                ## Generate fsf file from template
-                if [ "$j" == "1" ]; then
-          
-                    for i in "../../template/second_level_force_template.fsf"; do
+
+
+                for copeNum in 1 4 7; do
+
+                    # starts with the first run specified
+                    ## Generate fsf file from template
+                    if [ "$j" == "1" ] && [ "$copeNum" == "1" ]; then
+        
+                        # here selecting the original named template file
+                        for i in "../../template/"$templateName; do
+                            
+                            # now we set some standard paths ands masks 
+                            # set path 1 as the first run
+                            # and resave the file as a new template inside the folder
+                            sed -e 's@OUTDIR@'"$outputName$naming"'@g' \
+                                -e 's@PATH1@'$DIREC$s"/func/func"$runNum"/"$levelFile"/stats/cope"$copeNum".nii.gz"'@g' \
+                                -e 's@THRESH_MASK@'$DIREC"template/"$threshmask""'@g' \
+                                -e 's@NSUBJECTS@'$(( ${#myFunc[@]} * 3 ))'@g' <$i> design_leveltwo_force_FLOB"$k".fsf 
+                                #-e 's@NSUBJECTS@'${#myFunc[@]}'@g' <$i> design_leveltwo_force_FLOB"$j".fsf 
+        
+
+                        done
+                    
+
+                    # must need a second run so this is when j=2
+                    elif [ "$j" == "1" ] && [ "$copeNum" == "4" ]; then
+
+                        # take the template file we just named in the previous statement
+                        for i in "design_leveltwo_force_FLOB"$((k-1))".fsf"; do
+                            
+                            # now we sepcificy the second path we chose and create a new template file
+                            sed -e 's@PATH2@'$DIREC$s"/func/func"$runNum"/"$levelFile"/stats/cope"$copeNum".nii.gz"'@g' \
+                                -e 's@OUTLPATH@''@g' <$i> design_leveltwo_force_FLOB"$k".fsf 
+        
+                        done
                         
-                        sed -e 's@OUTDIR@'"level_two_force"$naming""'@g' \
-                            -e 's@PATH1@'$DIREC$s"/func/func"$runNum"/level_one_force.feat"'@g' \
-                            -e 's@THRESH_MASK@'$DIREC"template/MNI152_T1_2mm_brain_GM.nii.gz"'@g' \
-                            -e 's@NSUBJECTS@'${#myFunc[@]}'@g' <$i> design_leveltwo_force"$j".fsf 
-    
-                            #-e 's@THRESH_MASK@'$DIREC"template/MNI152_T1_2mm_brain_GM.nii.gz"'@g' \
-    
-                    done
-    
-                elif [ "$j" == "2" ]; then
-    
-                    for i in "design_leveltwo_force"$((j-1))".fsf"; do
-    
-                        sed -e 's@PATH2@'$DIREC$s"/func/func"$runNum"/level_one_force.feat"'@g' -e 's@OUTLPATH@''@g' <$i> design_leveltwo_force"$j".fsf 
-    
-                    done
-    
-                    #echo design_leveltwo_force"$((j-1))"
-                    rm design_leveltwo_force"$((j-1))".fsf
-    
-                else
-    
-                    for i in "design_leveltwo_force"$((j-1))".fsf"; do
-     
-                        sed -e 's@FEAT_PATH@'"# 4D AVW data or FEAT directory ("$j")\nset feat_files("$j") "$DIREC$s"/func/func"$runNum"/level_one_force.feat\n\nFEAT_PATH"'@g' \
-                            -e 's@EVG_PATH@'"# Higher-level EV value for EV 1 and input "$j"\nset fmri(evg"$j".1) 1\n\nEVG_PATH"'@g' \
-                            -e 's@GROUPMEM_PATH@'"# Group membership for input "$j"\nset fmri(groupmem\."$j") 1\n\nGROUPMEM_PATH"'@g' <$i> design_leveltwo_force"$j".fsf 
-    
-                    done
-    
-                    rm design_leveltwo_force"$((j-1))".fsf
-    
-                fi           
-     
-                ((j+=1));
-    
-                if [ "$j" -gt "${#myFunc[@]}" ]; then
-    
-                    if [ -f design_leveltwo_force"$naming".fsf ]; then
-                        # remove the old previous one because im not sure it will overwrite properly
-                        rm design_leveltwo_force"$naming".fsf
+                        # remove the old template file as its not needed
+                        #echo design_leveltwo_force_FLOB"$((j-1))"
+                        rm design_leveltwo_force_FLOB"$((k-1))".fsf
+
+
+                    elif [ "$j" == "1" ] && [ "$copeNum" == "7" ]; then
+
+                        # take the template file we just named in the previous statement                
+                        for i in "design_leveltwo_force_FLOB"$((k-1))".fsf"; do
+         
+                            # here we have to edit the file to add in more than two runs
+                            # this is so we can choose whatever amount of runs we want and add into the file instead of delete
+                            sed -e 's@FEAT_PATH@'"# 4D AVW data or FEAT directory ("$k")\nset feat_files("$k") "$DIREC$s"/func/func"$runNum"/"$levelFile"/stats/cope"$copeNum".nii.gz""\n\nFEAT_PATH"'@g' \
+                                -e 's@EVG_PATH@'"# Higher-level EV value for EV 1 and input "$k"\nset fmri(evg"$k".1) 1\n\nEVG_PATH"'@g' \
+                                -e 's@GROUPMEM_PATH@'"# Group membership for input "$k"\nset fmri(groupmem\."$k") 1\n\nGROUPMEM_PATH"'@g' <$i> design_leveltwo_force_FLOB"$k".fsf 
+        
+                        done
+        
+                        # remove the old template file as its not needed
+                        rm design_leveltwo_force_FLOB"$((k-1))".fsf
+        
+                    else
+
+                        # take the template file we just named in the previous statement                
+                        for i in "design_leveltwo_force_FLOB"$((k-1))".fsf"; do
+         
+                            # here we have to edit the file to add in more than two runs
+                            # this is so we can choose whatever amount of runs we want and add into the file instead of delete
+                            sed -e 's@FEAT_PATH@'"# 4D AVW data or FEAT directory ("$k")\nset feat_files("$k") "$DIREC$s"/func/func"$runNum"/"$levelFile"/stats/cope"$copeNum".nii.gz""\n\nFEAT_PATH"'@g' \
+                                -e 's@EVG_PATH@'"# Higher-level EV value for EV 1 and input "$k"\nset fmri(evg"$k".1) 1\n\nEVG_PATH"'@g' \
+                                -e 's@GROUPMEM_PATH@'"# Group membership for input "$k"\nset fmri(groupmem\."$k") 1\n\nGROUPMEM_PATH"'@g' <$i> design_leveltwo_force_FLOB"$k".fsf 
+        
+                        done
+        
+                        # remove the old template file as its not needed
+                        rm design_leveltwo_force_FLOB"$((k-1))".fsf
+        
+                    fi           
+         
+
+                    ((k+=1));
+                    
+
+                    # one statement to make sure the file is named properly
+                    if [ "$k" -gt "$(( ${#myFunc[@]} * 3 ))" ]; then
+        
+                        # checking if a file exists already
+                        if [ -f design_leveltwo_force_FLOB"$naming".fsf ]; then
+        
+                            # remove the old previous one because im not sure it will overwrite properly
+                            rm design_leveltwo_force_FLOB"$naming".fsf
+                        fi
+                        
+                        # set some final paths to empty
+                        for i in "design_leveltwo_force_FLOB"$((k-1))".fsf"; do
+        
+                            sed -e 's@FEAT_PATH@''@g' -e 's@EVG_PATH@''@g' -e 's@GROUPMEM_PATH@''@g' <$i> design_leveltwo_force_FLOB"$naming".fsf 
+        
+                        done
+        
+                        #echo design_leveltwo"$((j-1))"
+                        rm design_leveltwo_force_FLOB"$((k-1))".fsf
+        
                     fi
-    
-                    for i in "design_leveltwo_force"$((j-1))".fsf"; do
-    
-                        sed -e 's@FEAT_PATH@''@g' -e 's@EVG_PATH@''@g' -e 's@GROUPMEM_PATH@''@g' <$i> design_leveltwo_force"$naming".fsf 
-    
-                    done
-    
-                    #echo design_leveltwo_force"$((j-1))"
-                    rm design_leveltwo_force"$((j-1))".fsf
-    
-                fi
-    
+
+
+                done
+
+                ((j+=1));
+
             done
-    
-    
+
             tput setaf 2; echo "Run second level analysis"
             tput sgr0; 
     
             # Run the analysis using the fsf file
-            feat design_leveltwo_force"$naming".fsf
-  
+            feat design_leveltwo_force_FLOB"$naming".fsf
+
             # move into folder so it doesnt take up space
-            mv design_leveltwo_force"$naming".fsf level_two_force"$naming".gfeat/design_leveltwo_force"$naming".fsf 
-  
-		    tput setaf 2; echo "Done!" 
-        	    tput sgr0;
+            mv design_leveltwo_force_FLOB"$naming".fsf  "$outputName$naming".gfeat/design_leveltwo_force_FLOB"$naming".fsf 
+
+            tput setaf 2; echo "Done!" 
+                tput sgr0;
 
         fi
 
 
 done
+
+echo
+echo "${sub[@]}"
+echo "${myFunc[@]}"
+echo
 
 ####################################
 # Display useful info for the log

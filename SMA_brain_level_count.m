@@ -6,8 +6,10 @@ addpath('D:\NHP_code\cbiNifti')
 
 % varibales to set up before
 subName = {'SMA04_001','SMA04_002','SMA04_003','SMA04_004'}; 
-% subName = {'SMA05_001','SMA05_002'};%,'SMA05_003','SMA05_004'};
+subName = {'SMA05_001','SMA05_002','SMA05_003','SMA05_004'};
+% subName = {'SMA06_001','SMA06_002','SMA06_003','SMA06_004'};
 
+% 
 allData = {};
 for i = 1:length(subName)
 
@@ -51,8 +53,9 @@ addpath('D:\NHP_code\cbiNifti')
 
 % varibales to set up before
 subName = {'SMA04_001','SMA04_002','SMA04_003','SMA04_004'};
-% subName = {'SMA05_001','SMA05_002', 'SMA05_001','SMA05_002'};%,'SMA05_003','SMA05_004'};
-% 
+% subName = {'SMA05_001','SMA05_002', 'SMA05_003','SMA05_004'};%,'SMA05_003','SMA05_004'};
+subName = {'SMA06_001','SMA06_002','SMA06_003','SMA06_004'};
+
 % fmri_brain_moco_mean_tsnr_MNI152.nii.gz
 
 gunzip('D:\SMA\MRI_data_upper_limb\Brain\template\MNI152_T1_brain_mask.nii.gz');
@@ -116,8 +119,8 @@ title(sprintf('TSNR of Each Run'));
 % plot(mean(tsnr), 'k')
 % errorbar(1:7,mean(tsnr), std(tsnr)/sqrt(length(tsnr)), 'Color','black')
 % Save the plot as a PNG image
-saveas(gcf, ['D:\SMA\MRI_data_upper_limb\Spine\analysis\', subName{1}(1:5), Brain_tsnr.png']);
-saveas(gcf, ['D:\SMA\MRI_data_upper_limb\Spine\analysis\', subName{1}(1:5), Brain_tsnr.svg')];
+saveas(gcf, ['D:\SMA\MRI_data_upper_limb\Brain\analysis\', subName{1}(1:5), '\Brain_tsnr.png']);
+saveas(gcf, ['D:\SMA\MRI_data_upper_limb\Brain\analysis\', subName{1}(1:5), '\Brain_tsnr.svg']);
 
 
 % Define the run combinations (1 to 6)
@@ -139,16 +142,17 @@ saveas(gcf, ['D:\SMA\MRI_data_upper_limb\Spine\analysis\', subName{1}(1:5), Brai
 %% template matching
 clear all
 
-%%% SPINE
+%%% Brain
 
 % addpath('/Users/pirondinilab/spinalcordtoolbox/cbiNifti');
 addpath('D:\NHP_code\cbiNifti')
 
 % varibales to set up before
 subName = {'SMA04_001','SMA04_002','SMA04_003','SMA04_004'};
-% subName = {'SMA05_001','SMA05_002','SMA05_001','SMA05_002'};%,'SMA05_003','SMA05_004'};
+subName = {'SMA05_001','SMA05_002','SMA05_003','SMA05_004'};
+subName = {'SMA06_001','SMA06_002','SMA06_003','SMA06_004'};
 
-zScore = 2.3;
+zScore = 3.1;
 
 copeFile = 'cope1.feat';
 
@@ -170,7 +174,7 @@ for i = 1:length(subName)
     for folder = 3:length(subjectFolder)
 
         %is dir and name contains gfeat
-        if subjectFolder(folder).isdir && contains(subjectFolder(folder).name, 'level_two_FLOB')
+        if subjectFolder(folder).isdir && contains(subjectFolder(folder).name, 'level_two_force_FLOB')
 
             disp(subjectFolder(folder).name)
 
@@ -240,8 +244,9 @@ xticks(1:4)
 xticklabels({'Pre 1','Pre 2','Post 1','Post 2'})
 
 % Save the plot as a PNG image
-saveas(gcf, ['D:\SMA\MRI_data_upper_limb\Spine\analysis\', subName{1}(1:5), 'Brain_voxel_success.png']);
-saveas(gcf, ['D:\SMA\MRI_data_upper_limb\Spine\analysis\', subName{1}(1:5), 'Brain_voxel_success.svg']);
+saveas(gcf, ['D:\SMA\MRI_data_upper_limb\Brain\analysis\', subName{1}(1:5), '\Brain_voxel_success_z', num2str(zScore), '.png']);
+saveas(gcf, ['D:\SMA\MRI_data_upper_limb\Brain\analysis\', subName{1}(1:5), '\Brain_voxel_success_z', num2str(zScore), '.svg']);
+
 % Step 1: Detect changepoints based on changes in the slope ('linear')
 % Adjust 'MaxNumChanges' based on your data (max number of changes to detect)
 
@@ -278,8 +283,8 @@ saveas(gcf, ['D:\SMA\MRI_data_upper_limb\Spine\analysis\', subName{1}(1:5), 'Bra
 % xticklabels({'2-3','3-4','4-5','5-6'})
 
 % Save the plot as a PNG image
-% saveas(gcf, '['D:\SMA\MRI_data_upper_limb\Spine\analysis\', subName{1}(1:5), Brain_voxel_diff.png');
-% saveas(gcf, '['D:\SMA\MRI_data_upper_limb\Spine\analysis\', subName{1}(1:5), Brain_voxel_diff.svg');
+% saveas(gcf, '['D:\SMA\MRI_data_upper_limb\Brain\analysis\', subName{1}(1:5), Brain_voxel_diff.png');
+% saveas(gcf, '['D:\SMA\MRI_data_upper_limb\Brain\analysis\', subName{1}(1:5), Brain_voxel_diff.svg');
 
 figure;
 plot(zScores);
@@ -298,8 +303,9 @@ xticklabels({'Pre 1','Pre 2','Post 1','Post 2'})
 % [rho,pval] = corr(mean(activeVoxels)', 'Spearman')
 
 % Save the plot as a PNG image
-saveas(gcf, ['D:\SMA\MRI_data_upper_limb\Spine\analysis\', subName{1}(1:5), 'Brain_zscore_success.png']);
-saveas(gcf, ['D:\SMA\MRI_data_upper_limb\Spine\analysis\', subName{1}(1:5), 'Brain_zscore_success.svg']);
+saveas(gcf, ['D:\SMA\MRI_data_upper_limb\Brain\analysis\', subName{1}(1:5), '\Brain_zscore_success_z', num2str(zScore), '.png']);
+saveas(gcf, ['D:\SMA\MRI_data_upper_limb\Brain\analysis\', subName{1}(1:5), '\Brain_zscore_success_z', num2str(zScore), '.svg']);
+
 
 % Spearman's correlation for Z-scores
 % [rho_ZScores, pval_ZScores] = corr(runCombinations', mean(zScores)', 'Type', 'Spearman');
@@ -328,8 +334,8 @@ saveas(gcf, ['D:\SMA\MRI_data_upper_limb\Spine\analysis\', subName{1}(1:5), 'Bra
 % xticklabels({'2-3','3-4','4-5','5-6'})
 
 % Save the plot as a PNG image
-% saveas(gcf, '['D:\SMA\MRI_data_upper_limb\Spine\analysis\', subName{1}(1:5), Brain_zscore_diff.png');
-% saveas(gcf, '['D:\SMA\MRI_data_upper_limb\Spine\analysis\', subName{1}(1:5), Brain_zscore_diff.svg');
+% saveas(gcf, '['D:\SMA\MRI_data_upper_limb\Brain\analysis\', subName{1}(1:5), Brain_zscore_diff.png');
+% saveas(gcf, '['D:\SMA\MRI_data_upper_limb\Brain\analysis\', subName{1}(1:5), Brain_zscore_diff.svg');
 
 
 
@@ -344,8 +350,8 @@ saveas(gcf, ['D:\SMA\MRI_data_upper_limb\Spine\analysis\', subName{1}(1:5), 'Bra
 % xticks(1:5)
 % xticklabels({'1-2','1-3','1-4','1-5','1-6'})
 % % Save the plot as a PNG image
-% % saveas(gcf, '['D:\SMA\MRI_data_upper_limb\Spine\analysis\', subName{1}(1:5), Brain_voxel_slope.png');
-% % saveas(gcf, '['D:\SMA\MRI_data_upper_limb\Spine\analysis\', subName{1}(1:5), Brain_voxel_slope.svg');
+% % saveas(gcf, '['D:\SMA\MRI_data_upper_limb\Brain\analysis\', subName{1}(1:5), Brain_voxel_slope.png');
+% % saveas(gcf, '['D:\SMA\MRI_data_upper_limb\Brain\analysis\', subName{1}(1:5), Brain_voxel_slope.svg');
 % 
 % 
 % 
@@ -359,8 +365,8 @@ saveas(gcf, ['D:\SMA\MRI_data_upper_limb\Spine\analysis\', subName{1}(1:5), 'Bra
 % xticks(1:5)
 % xticklabels({'1-2','1-3','1-4','1-5','1-6'})
 % % Save the plot as a PNG image
-% % saveas(gcf, '['D:\SMA\MRI_data_upper_limb\Spine\analysis\', subName{1}(1:5), Brain_zscore_slope.png');
-% % saveas(gcf, '['D:\SMA\MRI_data_upper_limb\Spine\analysis\', subName{1}(1:5), Brain_zscore_slope.svg');
+% % saveas(gcf, '['D:\SMA\MRI_data_upper_limb\Brain\analysis\', subName{1}(1:5), Brain_zscore_slope.png');
+% % saveas(gcf, '['D:\SMA\MRI_data_upper_limb\Brain\analysis\', subName{1}(1:5), Brain_zscore_slope.svg');
 
 actVoxelsSeg6 = actVoxelsSeg4(3:end,:);
 zSeg6 = zSeg4(3:end,:);
@@ -372,10 +378,10 @@ figure;
 hBar=barh([mean(actVoxelsSeg4)', mean(actVoxelsSeg6)']);
 X=cell2mat(get(hBar,'XData')).'+[hBar.XOffset];
 hold on  %4 runs
-hEB = errorbar([mean(actVoxelsSeg4)', mean(actVoxelsSeg6)'], X, [(std(actVoxelsSeg4)/sqrt(length(actVoxelsSeg4)))',  (std(actVoxelsSeg6)/sqrt(length(actVoxelsSeg6)))'], 'horizontal', '.', 'Color','black');  % add the errorbar
+hEB = errorbar([mean(actVoxelsSeg4)', mean(actVoxelsSeg6)'], X, [(std(actVoxelsSeg4)/sqrt(length(actVoxelsSeg4)))',  (std(actVoxelsSeg6)/sqrt(length(actVoxelsSeg6)))'], 'horizontal','.', 'Color', 'black', 'Marker', 'none');  % add the errorbar
 randVec = (-1 + (1+1)*rand(2,1))/10;
-scatter(actVoxelsSeg4, [randVec+X(1,1), randVec+X(2,1), randVec+X(3,1), randVec+X(4,1), randVec+X(5,1), randVec+X(6,1), randVec+X(7,1), randVec+X(8,1)], 20, 'k','o','filled'); 
-scatter(actVoxelsSeg6, [randVec+X(1,2), randVec+X(2,2), randVec+X(3,2), randVec+X(4,2), randVec+X(5,2), randVec+X(6,2), randVec+X(7,2), randVec+X(8,2)], 20, 'k','o','filled'); 
+scatter(actVoxelsSeg4, [randVec+X(1,1), randVec+X(2,1), randVec+X(3,1), randVec+X(4,1), randVec+X(5,1), randVec+X(6,1), randVec+X(7,1), randVec+X(8,1)], 30, 'k','o','filled'); 
+scatter(actVoxelsSeg6, [randVec+X(1,2), randVec+X(2,2), randVec+X(3,2), randVec+X(4,2), randVec+X(5,2), randVec+X(6,2), randVec+X(7,2), randVec+X(8,2)], 30, 'k','o','filled'); 
 set(gca,'YDir','reverse')
 yticks(1:length(1:8)); yticklabels({'SM (L)','SM (R)','Thalamus (L)', 'Thalamus (R)', 'Cerebellum (L)', 'Cerebellum (R)', 'BG (L)', 'BG (R)'});
 ylabel('Brain Area')
@@ -384,18 +390,20 @@ title(sprintf('Average Voxel Pre vs Post'));
 make_pretty
 
 % Save the plot as a PNG image
-saveas(gcf, ['D:\SMA\MRI_data_upper_limb\Spine\analysis\', subName{1}(1:5), 'Brain_voxel_area.png']);
-saveas(gcf, ['D:\SMA\MRI_data_upper_limb\Spine\analysis\', subName{1}(1:5), 'Brain_voxel_area.svg']);
+
+saveas(gcf, ['D:\SMA\MRI_data_upper_limb\Brain\analysis\', subName{1}(1:5), '\Brain_voxel_area_z', num2str(zScore), '.png']);
+saveas(gcf, ['D:\SMA\MRI_data_upper_limb\Brain\analysis\', subName{1}(1:5), '\Brain_voxel_area_z', num2str(zScore), '.svg']);
+
 
 figure;
 hBar=barh([mean(zSeg4, 'omitnan')', mean(zSeg6, 'omitnan')']);
 X=cell2mat(get(hBar,'XData')).'+[hBar.XOffset];
 hold on  %4 runs
-hEB = errorbar([mean(zSeg4, 'omitnan')', mean(zSeg6, 'omitnan')'], X, [(std(zSeg4, 'omitnan')/sqrt(length(zSeg4)))',  (std(zSeg6, 'omitnan')/sqrt(length(zSeg6)))'], 'horizontal', '.', 'Color','black');  % add the errorbar
-% errorbar(mean(actVoxelsSeg4), 1:4, std(actVoxelsSeg4)/sqrt(length(actVoxelsSeg4)), 'horizontal', '.', 'Color','black')
+hEB = errorbar([mean(zSeg4, 'omitnan')', mean(zSeg6, 'omitnan')'], X, [(std(zSeg4, 'omitnan')/sqrt(length(zSeg4)))',  (std(zSeg6, 'omitnan')/sqrt(length(zSeg6)))'], 'horizontal','.', 'Color', 'black', 'Marker', 'none');  % add the errorbar
+% errorbar(mean(actVoxelsSeg4), 1:4, std(actVoxelsSeg4)/sqrt(length(actVoxelsSeg4)), 'horizontal','.', 'Color', 'black', 'Marker', 'none')
 randVec = (-1 + (1+1)*rand(2,1))/10;
-scatter(zSeg4, [randVec+X(1,1), randVec+X(2,1), randVec+X(3,1), randVec+X(4,1), randVec+X(5,1), randVec+X(6,1), randVec+X(7,1), randVec+X(8,1)], 20, 'k','o','filled'); 
-scatter(zSeg6,  [randVec+X(1,2), randVec+X(2,2), randVec+X(3,2), randVec+X(4,2), randVec+X(5,2), randVec+X(6,2), randVec+X(7,2), randVec+X(8,2)], 20, 'k','o','filled'); 
+scatter(zSeg4, [randVec+X(1,1), randVec+X(2,1), randVec+X(3,1), randVec+X(4,1), randVec+X(5,1), randVec+X(6,1), randVec+X(7,1), randVec+X(8,1)], 30, 'k','o','filled'); 
+scatter(zSeg6,  [randVec+X(1,2), randVec+X(2,2), randVec+X(3,2), randVec+X(4,2), randVec+X(5,2), randVec+X(6,2), randVec+X(7,2), randVec+X(8,2)], 30, 'k','o','filled'); 
 set (gca,'YDir','reverse')
 yticks(1:length(1:8)); yticklabels({'SM (L)','SM (R)','Thalamus (L)', 'Thalamus (R)', 'Cerebellum (L)', 'Cerebellum (R)', 'BG (L)', 'BG (R)'});
 ylabel('Brain Area')
@@ -404,192 +412,78 @@ title(sprintf('Average Z-score Pre vs Post'));
 make_pretty
 
 % Save the plot as a PNG image
-saveas(gcf, ['D:\SMA\MRI_data_upper_limb\Spine\analysis\', subName{1}(1:5), 'Brain_zscore_area.png']);
-saveas(gcf, ['D:\SMA\MRI_data_upper_limb\Spine\analysis\', subName{1}(1:5), 'Brain_zscore_area.svg']);
+saveas(gcf, ['D:\SMA\MRI_data_upper_limb\Brain\analysis\', subName{1}(1:5), '\Brain_zscore_area_z', num2str(zScore), '.png']);
+saveas(gcf, ['D:\SMA\MRI_data_upper_limb\Brain\analysis\', subName{1}(1:5), '\Brain_zscore_area_z', num2str(zScore), '.svg']);
 
-% h = barh(flip(cerAvg([1 2 3 4 6 5 7 8]),1),'FaceColor',[.35 .35 .35]);  %6 runs
-% %legend('4R','6R','Location','eastoutside')
-% title (sprintf('All subjects - average : %d runs combined',i+1))
-% yticks(1:8)
-% xlim([0 50])
-% yticklabels({'Cerebellum (R)','Cerebellum (L)','BG (R)','BG (L)','Thalamus (R)','Thalamus (L)','SM (R)','SM (L)'})
 
-% %% template matching
-% clear all
-% 
-% %%% SPINE
-% 
-% % addpath('/Users/pirondinilab/spinalcordtoolbox/cbiNifti');
-% addpath('D:\NHP_code\cbiNifti')
-% 
-% % varibales to set up before
-% subName = {'SMA04_001','SMA04_002','SMA04_003','SMA04_004'};
-% % subName = {'SMA05_0c01','SMA05_002'};%,'SMA05_003','SMA05_004'};
-% 
-% zScore = 2.3;
-% 
-% % THINGS TO ADD
-% [brainLevels, ~] = cbiReadNifti('D:\SMA\MRI_data_upper_limb\Brain\template\ATLAS\GREICIUS\Sensorimotor\test_final1.nii');
-% 
-% allData = {};
-% for i = 1:length(subName)
-% 
-%     allData{i, 1} = {};
-%     allData{i, 2} = subName{i};
-% 
-%     for j = 1:4
-%         direc = fullfile('D:\SMA\MRI_data_upper_limb\Brain', subName{i}, 'func', ['func', num2str(j)]);
-% 
-% %         direc = fullfile('D:\SMA\MRI_data_upper_limb\Brain', subName{i}, 'func', ['func', num2str(j)]);
-%     
-%         subjectFolder = dir(direc);
-%     
-%         disp(subName{i})
-% 
-%         fileCounter = 1;
-%         for folder = 3:length(subjectFolder)
-%     
-%             %is dir and name contains gfeat
-%             if subjectFolder(folder).isdir && contains(subjectFolder(folder).name, 'level_one_FLOB')
-%     
-%                 disp(subjectFolder(folder).name)
-%     
-%                 fileName = strsplit(subjectFolder(folder).name, '.');
-%     
-%                 if ~exist(fullfile(direc, subjectFolder(folder).name, 'stats\zstat1.nii'))
-%     
-%                     gunzip(fullfile(direc, subjectFolder(folder).name,  'stats\zstat1.nii.gz'));
-%     
-%                 end
-%     
-%                 [dataFile, ~] = cbiReadNifti(fullfile(direc, subjectFolder(folder).name,  'stats\zstat1.nii'));
-% 
-%                 disp(fullfile(direc, subjectFolder(folder).name, 'stats\zstat1.nii'))
-%     
-%                 numVoxels = sum(sum(sum((dataFile>=zScore).*(brainLevels>=1))));
-%                 mag = dataFile(brainLevels>=1);
-%     
-%                 % number of active voxels
-%                 allData{i, 1}{j+1, 1} = [numVoxels/sum(sum(sum(brainLevels>=1)))*100, mean(mag(mag>zScore)), std(mag(mag>zScore))];
-%                 allData{i, 1}{j+1, 2} = subjectFolder(folder).name;
-%     
-%                 fileCounter = fileCounter + 1;
-%             end
-%     
-%         end
-%     end
-% end
-% 
-% for i = 1:length(allData)
-%     for j = 1:length(allData{i,1})
-% 
-%         activeVoxels(i,j) = allData{i,1}{j,1}(1);
-%         zScores(i,j) = allData{i,1}{j,1}(2);
-%          
-%     end
-%         
-% end
-% % for i = 1:length(allData1)
-% % 
-% %     activeVoxels(i,1) = allData{i,1}{1,1}(1);
-% %     zScores(i,1) = allData{i,1}{1,1}(2);
-% %         
-% %     activeVoxels(i,2) = allData2{i,1}{1,1}(1);
-% %     zScores(i,2) = allData2{i,1}{1,1}(2);
-% %         
-% % end
-% 
-% % [ci95, rejectNull, diffSampMeans] = bootstrapCompMeans(activeVoxels(:,1), mean(activeVoxels(:,2:end),2), 10000, 0.001);
-% % rejectNull
-% % [ci95, rejectNull, diffSampMeans] = bootstrapCompMeans(zScores(:,1), mean(zScores(:,2:end),2), 10000, 0.001);
-% % rejectNull
-% [h,p,ci,stats] = ttest(activeVoxels(:,1), mean(activeVoxels(:,2:end),2, 'omitnan'));
-% h,p,ci,stats
-% [h,p,ci,stats] = ttest(zScores(:,1), mean(zScores(:,2:end),2, 'omitnan'));
-% h,p,ci,stats
-% 
-% activeVoxels2 = [activeVoxels(:,1), mean(activeVoxels(:,2:end),2)];
-% zScores2 = [zScores(:,1), mean(zScores(:,2:end),2)];
-% 
-% mean(activeVoxels2)
-% mean(zScores2)
-% std(activeVoxels2)/sqrt(length(activeVoxels2))
-% std(zScores2)/sqrt(length(zScores2))
-% 
-% plotCreator(activeVoxels2, 1:2);
-% % figure;
-% % plot(activeVoxels2', '.-r')
-% % hold on
-% % plot(mean(activeVoxels2), 'k')
-% % errorbar(1:2, mean(activeVoxels2), std(activeVoxels2)/sqrt(length(activeVoxels2)), 'Color','black')
-% make_pretty
-% xlim([0.75,2.25])
-% ylabel('Active Voxels')
-% xlabel('Group');
-% title(sprintf('Mean Active Voxel'));
-% % make_pretty
-% xticklabels({'Task-Free','Task'})
-% xticks(1:2)
-% 
-% % % Save the plot as a PNG image
-% % saveas(gcf, '['D:\SMA\MRI_data_upper_limb\Spine\analysis\', subName{1}(1:5), Brain_voxel_control.png');
-% % saveas(gcf, '['D:\SMA\MRI_data_upper_limb\Spine\analysis\', subName{1}(1:5), Brain_voxel_control.svg');
-% 
-% 
-% plotCreator(zScores2, 1:2);
-% % figure;
-% % plot(zScores2', '.-r')
-% % hold on
-% % plot(mean(zScores2), 'k')
-% % errorbar(1:2, mean(zScores2), std(zScores2)/sqrt(length(zScores2)), 'Color','black')
-% make_pretty
-% xlim([0.75,2.25])
-% ylabel('Z-Score')
-% xlabel('Group');
-% title(sprintf('Mean Z-Score'));
-% make_pretty
-% xticklabels({'Task-Free','Task'})
-% xticks(1:2)
-% 
-% % Save the plot as a PNG image
-% % saveas(gcf, '['D:\SMA\MRI_data_upper_limb\Spine\analysis\', subName{1}(1:5), Brain_zscore_control.png');
-% % saveas(gcf, '['D:\SMA\MRI_data_upper_limb\Spine\analysis\', subName{1}(1:5), Brain_zscore_control.svg');
-% 
-% plotCreator(activeVoxels, 1:7);
-% % figure;
-% % plot(activeVoxels', '.-r')
-% % hold on
-% % plot(mean(activeVoxels), 'k')
-% % errorbar(1:7, mean(activeVoxels), std(activeVoxels)/sqrt(length(activeVoxels)), 'Color','black')
-% make_pretty
-% xlim([0.75,7.25])
-% ylabel('Active Voxels')
-% xlabel('Group');
-% title(sprintf('Mean Active Voxel'));
-% make_pretty
-% xticklabels({'Rest','1','2','3','4','5','6'})
-% 
-% % Save the plot as a PNG image
-% % saveas(gcf, '['D:\SMA\MRI_data_upper_limb\Spine\analysis\', subName{1}(1:5), Brain_active_control_all.png');
-% % saveas(gcf, '['D:\SMA\MRI_data_upper_limb\Spine\analysis\', subName{1}(1:5), Brain_active_control_all.svg');
-% 
-% plotCreator(zScores, 1:7);
-% % figure;
-% % plot(zScores', '.-r')
-% % hold on
-% % plot(mean(zScores), 'k')
-% % errorbar(1:7, mean(zScores), std(zScores)/sqrt(length(zScores)), 'Color','black')
-% make_pretty
-% xlim([0.75,7.25])
-% ylabel('Z-Score')
-% xlabel('Group');
-% title(sprintf('Mean Z-Score'));
-% make_pretty
-% xticklabels({'Rest','1','2','3','4','5','6'})
 
-% Save the plot as a PNG image
-% saveas(gcf, '['D:\SMA\MRI_data_upper_limb\Spine\analysis\', subName{1}(1:5), Brain_zscore_control_all.png');
-% saveas(gcf, '['D:\SMA\MRI_data_upper_limb\Spine\analysis\', subName{1}(1:5), Brain_zscore_control_all.svg');
+
+
+
+%%%%%%
+
+% % laterality index
+% LI = (left_activation - right_activation) / ...
+%      (left_activation + right_activation);
+% 
+% LI = +1 → Activity is fully left-lateralized
+% 
+% LI = –1 → Activity is fully right-lateralized
+% 
+% LI = 0 → Bilateral or symmetric activation
+
+% Define left and right region indices
+% Indices assumed from your labels: {'SM (L)','SM (R)','Thalamus (L)', 'Thalamus (R)', 'Cerebellum (L)', 'Cerebellum (R)', 'BG (L)', 'BG (R)'}
+leftIdx = [1 3 5 7];
+rightIdx = [2 4 6 8];
+regionNames = {'SM', 'Thalamus', 'Cerebellum', 'BG'};
+
+% Calculate Laterality Index for Pre and Post
+LI_pre = (actVoxelsSeg4(:,leftIdx) - actVoxelsSeg4(:,rightIdx)) ./ ...
+         (actVoxelsSeg4(:,leftIdx) + actVoxelsSeg4(:,rightIdx));
+LI_post = (actVoxelsSeg6(:,leftIdx) - actVoxelsSeg6(:,rightIdx)) ./ ...
+          (actVoxelsSeg6(:,leftIdx) + actVoxelsSeg6(:,rightIdx));
+
+% Average and SEM
+meanLI_pre = mean(LI_pre, 1);
+semLI_pre = std(LI_pre, 0, 1) / sqrt(size(LI_pre, 1));
+meanLI_post = mean(LI_post, 1);
+semLI_post = std(LI_post, 0, 1) / sqrt(size(LI_post, 1));
+
+% Plotting
+figure;
+hBar = bar([meanLI_pre; meanLI_post]', 'grouped');
+hold on;
+
+% Add error bars
+ngroups = size([meanLI_pre; meanLI_post]', 1);
+nbars = size([meanLI_pre; meanLI_post]', 2);
+groupwidth = min(0.8, nbars/(nbars + 1.5));
+
+
+% Prepare the data for errorbar plotting
+yvals = [meanLI_pre; meanLI_post];
+errors = [semLI_pre; semLI_post];
+
+% Then plot:
+
+for i = 1:nbars
+    x = (1:ngroups) - groupwidth/2 + (2*i-1) * groupwidth / (2*nbars);
+    errorbar(x, yvals(i,:), errors(i,:), 'k.', 'LineWidth', 1);
+end
+
+ylabel('Laterality Index (LI)');
+xlabel('Brain Region');
+xticks(1:length(regionNames));
+xticklabels(regionNames);
+legend({'Pre', 'Post'}, 'Location', 'northeast');
+title('Laterality Index Pre vs Post');
+ylim([-1, 1]);
+make_pretty  % Optional custom styling
+
+% % Save the figure
+saveas(gcf, ['D:\SMA\MRI_data_upper_limb\Brain\analysis\', subName{1}(1:5), '\LI_area_z', num2str(zScore), '.png']);
+saveas(gcf, ['D:\SMA\MRI_data_upper_limb\Brain\analysis\', subName{1}(1:5), '\LI_area_z', num2str(zScore), '.svg']);
 
 %%
 
