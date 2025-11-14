@@ -24,7 +24,7 @@ start=`date +%s`
 ####################################
 
 # load in function that has paths to subject
-. /mnt/d/SMA/Processing_Brain/path_to_subjects.sh 
+. /mnt/d/SBSN/Processing_Brain/path_to_subjects.sh 
 
 # For each subject
 for s in "${sub[@]}"; do
@@ -40,11 +40,11 @@ for s in "${sub[@]}"; do
     bet t1_crop.nii.gz t1_brain.nii.gz -f 0.3
 
 
-    if [ ! -f "t1_lesion_mask.nii.gz" ]; then
-        cp t1_brain.nii.gz t1_lesion_mask.nii.gz
+    # if [ ! -f "t1_lesion_mask.nii.gz" ]; then
+    #     cp t1_brain.nii.gz t1_lesion_mask.nii.gz
 
-        fslmaths t1_lesion_mask.nii.gz -mul 0 t1_lesion_mask.nii.gz
-    fi
+    #     fslmaths t1_lesion_mask.nii.gz -mul 0 t1_lesion_mask.nii.gz
+    # fi
 
     # register the T1 to the MNI template. Later we will apply a transform to put it in the subjects native space
     flirt -in t1_brain.nii.gz -ref ../../template/MNI152_T1_2mm_brain.nii.gz -omat t12template.mat -out t1_MNI.nii.gz -v
@@ -53,8 +53,8 @@ for s in "${sub[@]}"; do
     flirt -in t1_crop.nii.gz -ref ../../template/MNI152_T1_2mm_brain.nii.gz -out t1_skull_MNI.nii.gz -init t12template.mat -applyxfm -v
 
 
-    # to register the brain to the template instead of the entitre skull
-    flirt -in t1_lesion_mask.nii.gz -ref ../../template/MNI152_T1_2mm_brain.nii.gz -out t1_lesion_mask_MNI.nii.gz -init t12template.mat -applyxfm -interp nearestneighbour -v
+    # # to register the brain to the template instead of the entitre skull
+    # flirt -in t1_lesion_mask.nii.gz -ref ../../template/MNI152_T1_2mm_brain.nii.gz -out t1_lesion_mask_MNI.nii.gz -init t12template.mat -applyxfm -interp nearestneighbour -v
 
     # this will register EPI to t1
     #epi_reg --epi=func/func1/fmri_brain_moco_mean.nii.gz --t1=anat/t1_crop.nii.gz --t1brain=anat/t1_brain.nii.gz --out=test_epi.nii.gz -v

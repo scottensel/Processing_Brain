@@ -4,7 +4,7 @@ clear all
 
 
 % varibales to set up before
-subName = 'SMA06_004';
+subName = 'SBSN_H_019';
 disp(subName)
 
 volRemoved = 5;
@@ -13,10 +13,10 @@ TR = 2.2;
 % adding paths to the subject
 addpath('D:\NHP_code\cbiNifti')
 
-direc = fullfile('D:\SMA\MRI_data_upper_limb\Brain', subName, 'physio');
+direc = fullfile('D:\SBSN\Data\Brain', subName, 'physio');
 physio_folders = dir(direc);
 
-direc2 = fullfile('D:\SMA\MRI_data_upper_limb\Brain', subName, 'func');
+direc2 = fullfile('D:\SBSN\Data\Brain', subName, 'func');
 slice_number_folder = dir(direc2);
 %% THINGS TO ADD
 % my spine images are not all 100 slices
@@ -29,9 +29,9 @@ slice_number_folder = dir(direc2);
 
 for folder = 3:length(physio_folders)
 
-    if contains(physio_folders(folder).name, 'physio0')
-        continue
-    end
+%     if contains(physio_folders(folder).name, 'physio0')
+%         continue
+%     end
 
     disp(fullfile(direc, physio_folders(folder).name))
     
@@ -133,7 +133,7 @@ for folder = 3:length(physio_folders)
     % interleaved due to the multiband factor and accelration used in the sequence
     % we have to know what slice we cut off for the spine and use those timings to help with the regression
     % this next loop creates the timing file of the slices
-     idxSub = 0;
+    idxSub = 0;
     if ~contains(physio{1,1}{end}, 'LastTime')
         idxSub = 1;
     end
